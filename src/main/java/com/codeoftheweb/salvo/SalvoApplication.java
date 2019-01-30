@@ -27,17 +27,20 @@ public class SalvoApplication {
 
 			Player secondPlayer = new Player("c.obrian@ctu.gov");
 			playerRepository.save(secondPlayer);
-//			Game secondGame = new Game(new Date());
-//			gameRepository.save(secondGame);
 			GamePlayer gp2 = new GamePlayer(firstGame, secondPlayer);
 			gamePlayerRepository.save(gp2);
 
 			Player thirdPlayer = new Player("j.bauer@ctu.gov");
 			playerRepository.save(thirdPlayer);
-			Game thirdGame = new Game(new Date());
-			gameRepository.save(thirdGame);
-			GamePlayer gp3 = new GamePlayer(thirdGame, thirdPlayer);
+			Game secondGame = new Game(new Date());
+			gameRepository.save(secondGame);
+			GamePlayer gp3 = new GamePlayer(secondGame, thirdPlayer);
 			gamePlayerRepository.save(gp3);
+
+			Player forthPlayer = new Player("k.deur@ctu.gov");
+			playerRepository.save(forthPlayer);
+			GamePlayer gp4 = new GamePlayer(secondGame, forthPlayer);
+			gamePlayerRepository.save(gp4);
 		};
 	}
 

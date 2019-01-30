@@ -19,28 +19,25 @@ public class Game {
 
     private Date created;
 
-    public void addGamePlayer(GamePlayer gamePlayer) {
-        gamePlayer.setGame(this);
-        gamePlayers.add(gamePlayer);
-    }
 
+    // constructor
     public Game(Date date) {
         this.created = date;
     }
 
     public Game() {}
 
+    // ??
+//    public void addGamePlayer(GamePlayer gamePlayer) {
+//        gamePlayer.setGame(this);
+//        gamePlayers.add(gamePlayer);
+//    }
+
+
+    // getters
     public Date getDate() {
         return created;
     }
-//
-//    public void setDate(Date date) {
-//        this.created = date;
-//    }
-
-//    public String toString() {
-//        return created.toString();
-//    }
 
     public long getId() {
         return id;

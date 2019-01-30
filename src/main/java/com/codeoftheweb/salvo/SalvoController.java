@@ -9,30 +9,18 @@ import java.util.*;
 @RestController
 public class SalvoController {
 
-//    @Autowired
-//    private GamePlayerRepository gpRepo;
-
     @Autowired
     private GameRepository gameRepo;
-
-//    @RequestMapping("api/games")
-//    public List<Object> getAll() {
-//        List<Object> result = new ArrayList<>();
-//
-//        gameRepo.findAll().forEach(game -> {
-//            result.add(game.getId());
-//        });
-//
-//        return result;
-//    }
+    @Autowired
+    private GamePlayerRepository GamePlayerRepo;
 
     @RequestMapping("api/games")
-    public List<Map<String, Object>> getAllSecond(){
+    public List<Map<String, Object>> getAllGames() {
         List<Map<String, Object>> result = new ArrayList<>();
 
         gameRepo.findAll().forEach(game -> {
 
-            Map<String,Object> tempMap = new HashMap<>();
+            Map<String, Object> tempMap = new HashMap<>();
             tempMap.put("gameId", game.getId());
             tempMap.put("date", game.getDate());
             tempMap.put("gamePlayers", getListOfGamePlayers(game.gamePlayers));
@@ -42,22 +30,29 @@ public class SalvoController {
             result.add(tempMap);
         });
 
-
         return result;
     }
 
-    @Autowired
-    private PlayerRepository playerRepo;
+    private List<Map<String, Object>> getListOfGamePlayers(Set<GamePlayer> gamePlayers) {
+        List<Map<String, Object>> gamePlayersList = new ArrayList<>();
+        gamePlayers.forEach(gamePlayer -> {
 
-    public List<Object> getListOfGamePlayers(Set<GamePlayer> gamePlayersSet){
-        List<Map<String, Object>> newResult = new ArrayList<>();
-        playerRepo.findAll().forEach(gamePlayer -> {
-            Map<String,Object> temp = new HashMap<>();
-            temp.put("id", gamePlayer.getUserName());
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", gamePlayer.getId());
+            result.put("player", getPlayerInfo(gamePlayer));
 
-            newResult.add(temp);
+            gamePlayersList.add(result);
         });
 
-        return newResult;
+        return gamePlayersList;
+    }
+
+
+    private Map<String, Object> getPlayerInfo (GamePlayer gamePlayer) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", gamePlayer.getPlayer().getId());
+        result.put("email", gamePlayer.getPlayer().getUserName());
+
+        return result;
     }
 }

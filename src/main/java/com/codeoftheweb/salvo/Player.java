@@ -15,16 +15,12 @@ public class Player {
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
+
     private String userName;
 
-    public void addGamePlayer(GamePlayer gamePlayer) {
-        gamePlayer.setPlayer(this);
-        gamePlayers.add(gamePlayer);
-    }
 
-
+    // constructors
     public Player(String userName) {
-//        this.id = id;
         this.userName = userName;
     }
 
@@ -32,12 +28,29 @@ public class Player {
 
     }
 
-    public String getUserName() {
-        return userName;
+    // ??
+//    public void addGamePlayer(GamePlayer gamePlayer) {
+//        gamePlayer.setPlayer(this);
+//        gamePlayers.add(gamePlayer);
+//    }
+
+
+    // setters
+    public Set<GamePlayer> getGamePlayers() {
+        return gamePlayers;
     }
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    // getters
+    public long getId() {
+        return id;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     public String toString() {
