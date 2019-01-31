@@ -21,9 +21,9 @@ repositories {
 	mavenCentral()
 }
 
-//bootRun {
-//	addResources = true
-//}
+bootRun {
+	addResources = true
+}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

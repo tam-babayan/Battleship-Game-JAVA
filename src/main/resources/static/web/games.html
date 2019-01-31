@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Games</title>
 </head>
 <body>
-
+    <h1>Salvo</h1>
+    <hr/>
+    <table id="app">
+        <thead> Games</thead>
+        <tbody>
+            <tr v-for = "game in formattedGames">
+                <td>{{game.gameId}}</td>
+                <td>{{game.date}}</td>
+                <td>{{game.gamePlayers[0].player.email}}</td>
+                <td>{{game.gamePlayers[1].player.email}}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script type="text/javascript" src="scripts/games.js"></script>
 </body>
 </html>

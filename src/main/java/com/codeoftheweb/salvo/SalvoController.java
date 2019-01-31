@@ -1,8 +1,7 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -13,6 +12,22 @@ public class SalvoController {
     private GameRepository gameRepo;
     @Autowired
     private GamePlayerRepository GamePlayerRepo;
+
+    @RequestMapping(value="/api/game_view/{playerId}", method = RequestMethod.GET)
+    public Map<String, Object> getGameInfo(@PathVariable String playerId) {
+        GamePlayerRepo.findAll().forEach(game -> {
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("id", game.getId());
+            result.put("date", game.getDate());
+            result.put("gamePlayers", getListOfGamePlayers(game.getPlayer().gamePlayers));
+            System.out.println(result);
+        });
+
+        return null;
+    }
+
+
 
     @RequestMapping("api/games")
     public List<Map<String, Object>> getAllGames() {
@@ -25,7 +40,7 @@ public class SalvoController {
             tempMap.put("date", game.getDate());
             tempMap.put("gamePlayers", getListOfGamePlayers(game.gamePlayers));
 
-            System.out.println(tempMap);
+//            System.out.println(tempMap);
 
             result.add(tempMap);
         });
