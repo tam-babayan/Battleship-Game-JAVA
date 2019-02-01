@@ -1,7 +1,10 @@
 package com.codeoftheweb.salvo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -11,23 +14,40 @@ public class SalvoController {
     @Autowired
     private GameRepository gameRepo;
     @Autowired
-    private GamePlayerRepository GamePlayerRepo;
+    private GamePlayerRepository gamePlayerRepo;
+    @Autowired
+    private ShipRepository shipRepository;
 
-    @RequestMapping(value="/api/game_view/{playerId}", method = RequestMethod.GET)
-    public Map<String, Object> getGameInfo(@PathVariable String playerId) {
-        GamePlayerRepo.findAll().forEach(game -> {
+    @RequestMapping(value = "/api/game_view/{gamePlayerId}", method = RequestMethod.GET)
+    public Map<String, Object> getGameInfo(@PathVariable long gamePlayerId) {
+        GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
-            Map<String, Object> result = new HashMap<>();
-            result.put("id", game.getId());
-            result.put("date", game.getDate());
-            result.put("gamePlayers", getListOfGamePlayers(game.getPlayer().gamePlayers));
-            System.out.println(result);
-        });
+//        List<GamePlayer> gamePlayers = gamePlayerRepo.findAll();
 
-        return null;
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", gamePlayer.getGame().getId());
+        result.put("date", gamePlayer.getGame().getDate());
+        result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
+        result.put("ships", getShipInfo(gamePlayer));
+
+        return result;
     }
 
 
+    public List<Map<String, Object>> getShipInfo(GamePlayer gamePlayer) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        System.out.println(gamePlayer.getShips());
+
+        gamePlayer.getShips().forEach(ship -> {
+            Map<String, Object> tempMap = new HashMap<>();
+            tempMap.put("type", ship.getShipType());
+            tempMap.put("locations", ship.getShipLocations());
+
+            result.add(tempMap);
+        });
+        System.out.println(result);
+        return result;
+    }
 
     @RequestMapping("api/games")
     public List<Map<String, Object>> getAllGames() {
@@ -38,7 +58,7 @@ public class SalvoController {
             Map<String, Object> tempMap = new HashMap<>();
             tempMap.put("gameId", game.getId());
             tempMap.put("date", game.getDate());
-            tempMap.put("gamePlayers", getListOfGamePlayers(game.gamePlayers));
+            tempMap.put("gamePlayers", getListOfGamePlayers(game.getGamePlayers()));
 
 //            System.out.println(tempMap);
 
@@ -63,7 +83,7 @@ public class SalvoController {
     }
 
 
-    private Map<String, Object> getPlayerInfo (GamePlayer gamePlayer) {
+    private Map<String, Object> getPlayerInfo(GamePlayer gamePlayer) {
         Map<String, Object> result = new HashMap<>();
         result.put("id", gamePlayer.getPlayer().getId());
         result.put("email", gamePlayer.getPlayer().getUserName());

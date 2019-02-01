@@ -25,7 +25,7 @@ public class GamePlayer {
 
     private Date created;
 
-    @OneToMany(mappedBy="gamePlayer", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "gamePlayer", fetch = FetchType.EAGER)
     private Set<Ship> ships = new HashSet<>();
 
     // constructors
@@ -36,27 +36,13 @@ public class GamePlayer {
         this.game = game;
         this.player = player;
         this.created = new Date();
+//        this.ships = new HashSet<>();
     }
 
     // getters
+
     public Game getGame() {
         return game;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public Date getDate() {
-        return created;
-    }
-
-    public Set<Ship> getShips() {
-        return ships;
     }
 
     // setters
@@ -64,21 +50,37 @@ public class GamePlayer {
         this.game = game;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
+    public Date getDate() {
+        return created;
+    }
+
     public void setDate(Date date) {
         this.created = date;
     }
 
-    // methods
+    public Set<Ship> getShips() {
+        return ships;
+    }
 
-    public void  addShip(Ship ship) {
+    // methods
+    public void addShip(Ship ship) {
+        ship.setGamePlayer(this);
         this.ships.add(ship);
     }
 }

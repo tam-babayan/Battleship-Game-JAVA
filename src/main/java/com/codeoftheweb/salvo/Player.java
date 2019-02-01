@@ -14,7 +14,7 @@ public class Player {
     private long id;
 
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
-    Set<GamePlayer> gamePlayers;
+    private Set<GamePlayer> gamePlayers;
 
     private String userName;
 
@@ -42,6 +42,10 @@ public class Player {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     // getters

@@ -18,7 +18,6 @@ public class Ship {
     @JoinColumn(name = "gamePlayer_id")
     private GamePlayer gamePlayer;
 
-
     @ElementCollection
     @Column(name = "shipLocation")
     private List<String> shipLocations = new ArrayList<>();
@@ -28,7 +27,8 @@ public class Ship {
     // constructors
 
 
-    public Ship() {}
+    public Ship() {
+    }
 
     public Ship(List<String> shipLocations, String shipType) {
         this.shipLocations = shipLocations;
@@ -42,15 +42,19 @@ public class Ship {
         return id;
     }
 
-    public GamePlayer getGamePlayer() {
-        return gamePlayer;
-    }
-
     public List<String> getShipLocations() {
         return shipLocations;
     }
 
     public String getShipType() {
         return shipType;
+    }
+
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
+    }
+
+    public void setGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
     }
 }
