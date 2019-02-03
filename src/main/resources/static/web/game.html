@@ -6,16 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/game.css">
 
-    <title>Hello, world!</title>
+    <title>game_view</title>
 </head>
 
 <body>
 <h1>Game</h1>
 <hr/>
 <div class="container" id="app">
+    <div v-for="gamePlayer in this.gameInfo.gamePlayers">
+        {{gamePlayer.player.email}}
+        <span v-if="gamePlayer.player.id === playerId">(you)</span>
+    </div>
+    <hr/>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -23,16 +29,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="row in rows">
-            <th scope="row">{{row}}</th>
-            <td v-for="td in 10"></td>
+        <tr v-for="row in board">
+            <th scope="row">{{row.rowId}}</th>
+            <td v-for="td in row.column" v-bind:class="{ ship_cell: td.active }">
+            </td>
         </tr>
         </tbody>
     </table>
 </div>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>

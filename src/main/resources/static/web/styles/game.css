@@ -1,3 +1,6 @@
-h1 {
+body, h1 {
     text-align: center;
+}
+.ship_cell {
+    background: green;
 }

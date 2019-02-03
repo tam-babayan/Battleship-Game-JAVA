@@ -22,157 +22,179 @@ public class SalvoApplication {
 									 GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository) {
 		return (args) -> {
 
-			// First Player
 			// initialize and save Player
 			Player firstPlayer = new Player("j.bauer@ctu.gov ");
+			Player secondPlayer = new Player("c.obrian@ctu.gov");
+			Player thirdPlayer = new Player("kim_bauer@mail.com");
+			Player fourthPlayer = new Player("t.almeida@ctu.gov");
+			Player fifthPlayer = new Player("c.obrian@ctu.gov");
+			Player sixthPlayer = new Player("kim_bauer@mail.com");
 			playerRepository.save(firstPlayer);
+			playerRepository.save(secondPlayer);
+			playerRepository.save(thirdPlayer);
+			playerRepository.save(fourthPlayer);
+			playerRepository.save(fifthPlayer);
+			playerRepository.save(sixthPlayer);
+
+
 
 			// initialize and save Game
 			Game firstGame = new Game(new Date());
+			Game secondGame = new Game(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)));
+			Game thirdGame = new Game(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)));
 			gameRepository.save(firstGame);
+			gameRepository.save(secondGame);
+			gameRepository.save(thirdGame);
+
+
 
 			// initialize and save new GamePlayer
 			GamePlayer gp1 = new GamePlayer(firstGame, firstPlayer);
-			gamePlayerRepository.save(gp1);
-
-			// create location for ship
-			List<String> location1 = new ArrayList<>();
-			location1.add("H2");
-			location1.add("H3");
-			location1.add("H4");
-
-			// initialize and save ship
-			Ship ship1 = new Ship(location1, "Destroyer");
-
-			// adding ship into GamePlayer
-			gp1.addShip(ship1);
-			shipRepository.save(ship1);
-
-
-
-			// Second Player
-			// initialize and save Player
-			Player secondPlayer = new Player("c.obrian@ctu.gov");
-			playerRepository.save(secondPlayer);
-
-			// create location for ship
-			List<String> location2  = new ArrayList<>();
-			location2.add("B5");
-			location2.add("C5");
-			location2.add("D5");
-
-			// initialize and save ship
-			Ship ship2 = new Ship(location2, "Patrol Boat");
-
-			// initialize and save new GamePlayer
 			GamePlayer gp2 = new GamePlayer(firstGame, secondPlayer);
-			gamePlayerRepository.save(gp2);
-
-			// adding ship into GamePlayer
-			gp2.addShip(ship2);
-			shipRepository.save(ship2);
-
-
-
-			// Third player
-			// initialize and save Player
-			Player thirdPlayer = new Player("kim_bauer@mail.com");
-			playerRepository.save(thirdPlayer);
-
-			// initialize and save Game
-			Game secondGame = new Game(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)));
-			gameRepository.save(secondGame);
-
-			// create location for ship
-			List<String> location3  = new ArrayList<>();
-			location3.add("C6");
-			location3.add("C7");
-
-			// initialize and save ship
-			Ship ship3 = new Ship(location3, "Submarine");
-			shipRepository.save(ship3);
-
-			// initialize and save new GamePlayer
 			GamePlayer gp3 = new GamePlayer(secondGame, thirdPlayer);
+			GamePlayer gp4 = new GamePlayer(secondGame, fourthPlayer);
+			GamePlayer gp5 = new GamePlayer(thirdGame, fifthPlayer);
+			GamePlayer gp6 = new GamePlayer(thirdGame, sixthPlayer);
+			gamePlayerRepository.save(gp1);
+			gamePlayerRepository.save(gp2);
 			gamePlayerRepository.save(gp3);
-
-			// adding ship into GamePlayer
-			gp3.addShip(ship3);
-			shipRepository.save(ship3);
-
-
-
-			// Forth player
-			// initialize and save Player
-			Player forthPlayer = new Player("t.almeida@ctu.gov");
-			playerRepository.save(forthPlayer);
-
-			// create location for ship
-			List<String> location4  = new ArrayList<>();
-			location4.add("G6");
-			location4.add("H7");
-
-			// initialize and save ship
-			Ship ship4 = new Ship(location4, "Patrol Boat ");
-
-			// initialize and save new GamePlayer
-			GamePlayer gp4 = new GamePlayer(secondGame, forthPlayer);
 			gamePlayerRepository.save(gp4);
-
-			// adding ship into GamePlayer
-			gp4.addShip(ship4);
-			shipRepository.save(ship4);
+			gamePlayerRepository.save(gp5);
+			gamePlayerRepository.save(gp6);
 
 
 
-			// Fifth player
-			// initialize and save Player
-			Player fifthPlayer = new Player("c.obrian@ctu.gov");
-			playerRepository.save(fifthPlayer);
-
-			// initialize and save Game
-			Game thirdGame = new Game(new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(2)));
-			gameRepository.save(thirdGame);
-
-			// create location for ship
+			// initialize ship locations
+			List<String> location1_0 = new ArrayList<>();
+			List<String> location1_1 = new ArrayList<>();
+			List<String> location1_2 = new ArrayList<>();
+			List<String> location1_3 = new ArrayList<>();
+			List<String> location2_0  = new ArrayList<>();
+			List<String> location2_1  = new ArrayList<>();
+			List<String> location2_2 = new ArrayList<>();
+			List<String> location2_3 = new ArrayList<>();
+			List<String> location3_0  = new ArrayList<>();
+			List<String> location3_1  = new ArrayList<>();
+			List<String> location3_2 = new ArrayList<>();
+			List<String> location3_3 = new ArrayList<>();
+			List<String> location4_0  = new ArrayList<>();
+			List<String> location4_1  = new ArrayList<>();
+			List<String> location4_2 = new ArrayList<>();
+			List<String> location4_3 = new ArrayList<>();
 			List<String> location5  = new ArrayList<>();
+			List<String> location6  = new ArrayList<>();
+
+
+			//create location for ships
+			location1_0.add("H2");
+			location1_0.add("H3");
+			location1_0.add("H4");
+			location1_1.add("B9");
+			location1_1.add("C9");
+			location1_2.add("B3");
+			location1_2.add("C3");
+			location1_2.add("D3");
+			location1_2.add("E3");
+			location1_3.add("I7");
+
+			location2_0.add("G2");
+			location2_0.add("G3");
+			location2_0.add("G4");
+			location2_1.add("B9");
+			location2_1.add("B10");
+			location2_2.add("B3");
+			location2_2.add("C3");
+			location2_2.add("D3");
+			location2_2.add("E3");
+			location2_3.add("I7");
+
+			location3_0.add("C6");
+			location3_0.add("C7");
+			location3_1.add("B9");
+			location3_1.add("B10");
+			location3_2.add("B3");
+			location3_2.add("E3");
+			location3_2.add("F3");
+			location3_2.add("G3");
+			location3_3.add("I7");
+
+			location4_0.add("G7");
+			location4_0.add("H7");
+			location4_1.add("B9");
+			location4_1.add("B10");
+			location4_2.add("B3");
+			location4_2.add("E3");
+			location4_2.add("F3");
+			location4_2.add("G3");
+			location4_3.add("I7");
+
 			location5.add("A2");
 			location5.add("A3");
 			location5.add("A4");
 
-			// initialize and save ship
-			Ship ship5 = new Ship(location5, "Patrol Boat ");
-
-			// initialize and save new GamePlayer
-			GamePlayer gp5 = new GamePlayer(thirdGame, fifthPlayer);
-			gamePlayerRepository.save(gp5);
-
-			// adding ship into GamePlayer
-			gp5.addShip(ship5);
-			shipRepository.save(ship5);
-
-
-
-			// Sixth player
-			// initialize and save Player
-			Player sixthPlayer = new Player("kim_bauer@mail.com");
-			playerRepository.save(sixthPlayer);
-
-			// create location for ship
-			List<String> location6  = new ArrayList<>();
 			location6.add("E1");
 			location6.add("F1");
 			location6.add("G1");
 
 			// initialize and save ship
+			Ship ship1_0 = new Ship(location1_0, "Destroyer");
+			Ship ship1_1 = new Ship(location1_1, "Submarine");
+			Ship ship1_2 = new Ship(location1_2, "Patrol Boat");
+			Ship ship1_3 = new Ship(location1_3, "Patrol Boat");
+			Ship ship2_0 = new Ship(location2_0, "Patrol Boat");
+			Ship ship2_1 = new Ship(location2_1, "Submarine");
+			Ship ship2_2 = new Ship(location2_2, "Patrol Boat");
+			Ship ship2_3 = new Ship(location2_3, "Patrol Boat");
+			Ship ship3_0 = new Ship(location3_0, "Patrol Boat");
+			Ship ship3_1 = new Ship(location3_1, "Submarine");
+			Ship ship3_2 = new Ship(location3_2, "Patrol Boat");
+			Ship ship3_3 = new Ship(location3_3, "Patrol Boat");
+			Ship ship4_0 = new Ship(location4_0, "Patrol Boat");
+			Ship ship4_1 = new Ship(location4_1, "Submarine");
+			Ship ship4_2 = new Ship(location4_2, "Patrol Boat");
+			Ship ship4_3 = new Ship(location4_3, "Patrol Boat");
+			Ship ship5 = new Ship(location5, "Patrol Boat");
 			Ship ship6 = new Ship(location6, "Submarine");
 
-			// initialize and save new GamePlayer
-			GamePlayer gp6 = new GamePlayer(thirdGame, sixthPlayer);
-			gamePlayerRepository.save(gp6);
 
 			// adding ship into GamePlayer
+			gp1.addShip(ship1_0);
+			gp1.addShip(ship1_1);
+			gp1.addShip(ship1_2);
+			gp1.addShip(ship1_3);
+			gp2.addShip(ship2_0);
+			gp2.addShip(ship2_1);
+			gp2.addShip(ship2_2);
+			gp2.addShip(ship2_3);
+			gp3.addShip(ship3_0);
+			gp3.addShip(ship3_1);
+			gp3.addShip(ship3_2);
+			gp3.addShip(ship3_3);
+			gp4.addShip(ship4_0);
+			gp4.addShip(ship4_1);
+			gp4.addShip(ship4_2);
+			gp4.addShip(ship4_3);
+			gp5.addShip(ship5);
 			gp6.addShip(ship6);
+
+			// saving ships in shipRepository
+			shipRepository.save(ship1_0);
+			shipRepository.save(ship1_1);
+			shipRepository.save(ship1_2);
+			shipRepository.save(ship1_3);
+			shipRepository.save(ship2_0);
+			shipRepository.save(ship2_1);
+			shipRepository.save(ship2_2);
+			shipRepository.save(ship2_3);
+			shipRepository.save(ship3_0);
+			shipRepository.save(ship3_1);
+			shipRepository.save(ship3_2);
+			shipRepository.save(ship3_3);
+			shipRepository.save(ship4_0);
+			shipRepository.save(ship4_1);
+			shipRepository.save(ship4_2);
+			shipRepository.save(ship4_3);
+			shipRepository.save(ship5);
 			shipRepository.save(ship6);
 		};
 	}
