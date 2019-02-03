@@ -17,26 +17,40 @@ public class SalvoController {
     private GamePlayerRepository gamePlayerRepo;
     @Autowired
     private ShipRepository shipRepository;
+    @Autowired
+    private SalvoRepository salvoRepository;
 
     @RequestMapping(value = "/api/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public Map<String, Object> getGameInfo(@PathVariable long gamePlayerId) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
-
-//        List<GamePlayer> gamePlayers = gamePlayerRepo.findAll();
 
         Map<String, Object> result = new HashMap<>();
         result.put("id", gamePlayer.getGame().getId());
         result.put("date", gamePlayer.getGame().getDate());
         result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
         result.put("ships", getShipInfo(gamePlayer));
+        result.put("salvoes", getSalvoInfo(gamePlayer.getGame().getGamePlayers()));
 
         return result;
     }
 
+    private List<Map<String, Object>> getSalvoInfo(Set<GamePlayer> gamePlayers) {
+        List<Map<String, Object>> result =  new ArrayList<>();
+        gamePlayers.forEach(gamePlayer -> {
+            gamePlayer.getSalvoes().forEach(salvo -> {
+                Map<String, Object> tempMap = new HashMap<>();
+                tempMap.put("turn", salvo.getTurn());
+                tempMap.put("player", salvo.getGamePlayer().getId());
+                tempMap.put("locations", salvo.getSalvoLocations());
+                result.add(tempMap);
+            });
+        });
 
-    public List<Map<String, Object>> getShipInfo(GamePlayer gamePlayer) {
+        return result;
+    }
+
+    private List<Map<String, Object>> getShipInfo(GamePlayer gamePlayer) {
         List<Map<String, Object>> result = new ArrayList<>();
-        System.out.println(gamePlayer.getShips());
 
         gamePlayer.getShips().forEach(ship -> {
             Map<String, Object> tempMap = new HashMap<>();

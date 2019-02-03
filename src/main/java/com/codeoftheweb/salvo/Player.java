@@ -13,7 +13,7 @@ public class Player {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
-    @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
 
     private String userName;
@@ -40,21 +40,21 @@ public class Player {
         return gamePlayers;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    // getters
+    public long getId() {
+        return id;
     }
 
     public void setId(long id) {
         this.id = id;
     }
 
-    // getters
-    public long getId() {
-        return id;
-    }
-
     public String getUserName() {
         return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String toString() {

@@ -16,11 +16,51 @@ public class Salvo {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "gamePlayer_id")
-    private GamePlayer gamePlayer1;
+    private GamePlayer gamePlayer;
 
     @ElementCollection
     @Column(name = "salvoLocation")
     private List<String> salvoLocations = new ArrayList<>();
 
-    private int turen;
+    private int turn;
+
+    // constructor
+
+
+    public Salvo() {
+    }
+
+    public Salvo(GamePlayer gamePlayer, List<String> salvoLocations, int turn) {
+        this.gamePlayer = gamePlayer;
+        this.salvoLocations = salvoLocations;
+        this.turn = turn;
+    }
+
+    // getters
+
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
+    }
+
+    public void setGamePlayer(GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
+    }
+
+    public List<String> getSalvoLocations() {
+        return salvoLocations;
+    }
+
+    // setters
+
+    public void setSalvoLocations(List<String> salvoLocations) {
+        this.salvoLocations = salvoLocations;
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
 }

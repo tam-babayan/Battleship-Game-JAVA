@@ -25,14 +25,8 @@ public class Game {
         this.created = date;
     }
 
-    public Game() {}
-
-    // ??
-//    public void addGamePlayer(GamePlayer gamePlayer) {
-//        gamePlayer.setGame(this);
-//        gamePlayers.add(gamePlayer);
-//    }
-
+    public Game() {
+    }
 
     // getters
     public Date getDate() {
