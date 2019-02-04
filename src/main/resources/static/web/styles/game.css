@@ -4,3 +4,9 @@ body, h1 {
 .ship_cell {
     background: green;
 }
+.oponentSalvo_cell {
+    background: red;
+}
+.mySalvoes_cell {
+    background: blue;
+}

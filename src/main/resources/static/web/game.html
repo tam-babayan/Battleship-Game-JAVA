@@ -14,28 +14,49 @@
 </head>
 
 <body>
-<h1>Game</h1>
-<hr/>
-<div class="container" id="app">
+
+<div class="container d-flex flex-column align-self-center" id="app">
+    <h1>Game</h1>
     <div v-for="gamePlayer in this.gameInfo.gamePlayers">
         {{gamePlayer.player.email}}
         <span v-if="gamePlayer.player.id === playerId">(you)</span>
     </div>
-    <hr/>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th scope="col" v-for="column in columns">{{column}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="row in board">
-            <th scope="row">{{row.rowId}}</th>
-            <td v-for="td in row.column" v-bind:class="{ ship_cell: td.active }">
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="d-lg-flex mr-5">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col" v-for="column in columns">{{column}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="row in board">
+                    <th scope="row">{{row.rowId}}</th>
+                    <td v-for="td in row.column" v-bind:class="{ ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}">
+                        <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col" v-for="column in columns">{{column}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="row in board">
+                    <th scope="row">{{row.rowId}}</th>
+                    <td v-for="td in row.column" v-bind:class="{ mySalvoes_cell: td.mySalvoes }">
+                        <span v-if="td.mySalvoes">{{td.salvoTurn}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

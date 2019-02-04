@@ -199,56 +199,74 @@ public class SalvoApplication {
             // initialize salvo locations
             List<String> salvoLocation1_0 = new ArrayList<>();
             List<String> salvoLocation1_1 = new ArrayList<>();
+            List<String> salvoLocation1_2 = new ArrayList<>();
             List<String> salvoLocation2_0 = new ArrayList<>();
             List<String> salvoLocation2_1 = new ArrayList<>();
+            List<String> salvoLocation2_2 = new ArrayList<>();
             List<String> salvoLocation3_0 = new ArrayList<>();
             List<String> salvoLocation3_1 = new ArrayList<>();
+            List<String> salvoLocation3_2 = new ArrayList<>();
             List<String> salvoLocation4_0 = new ArrayList<>();
             List<String> salvoLocation4_1 = new ArrayList<>();
+            List<String> salvoLocation4_2 = new ArrayList<>();
             List<String> salvoLocation5 = new ArrayList<>();
             List<String> salvoLocation6 = new ArrayList<>();
 
             //create location for salvoes
             salvoLocation1_0.add("H9");
             salvoLocation1_1.add("A6");
+            salvoLocation1_2.add("G3");
             salvoLocation2_0.add("A1");
             salvoLocation2_1.add("B10");
+            salvoLocation2_2.add("H3");
             salvoLocation3_0.add("C8");
             salvoLocation3_1.add("B1");
+            salvoLocation3_2.add("H3");
             salvoLocation4_0.add("C8");
             salvoLocation4_1.add("D7");
+            salvoLocation4_2.add("F3");
             salvoLocation5.add("E1");
             salvoLocation6.add("I9");
 
             // initialize and save salvoes
             Salvo salvo1_0 = new Salvo(gp1, salvoLocation1_0, 1);
             Salvo salvo1_1 = new Salvo(gp1, salvoLocation1_1, 2);
+            Salvo salvo1_2 = new Salvo(gp1, salvoLocation1_2, 3);
             Salvo salvo2_0 = new Salvo(gp2, salvoLocation2_0, 1);
             Salvo salvo2_1 = new Salvo(gp2, salvoLocation2_1, 2);
+            Salvo salvo2_2 = new Salvo(gp3, salvoLocation2_2, 3);
             Salvo salvo3_0 = new Salvo(gp3, salvoLocation3_0, 1);
             Salvo salvo3_1 = new Salvo(gp3, salvoLocation3_1, 2);
+            Salvo salvo3_2 = new Salvo(gp3, salvoLocation3_2, 3);
             Salvo salvo4_0 = new Salvo(gp4, salvoLocation4_0, 1);
             Salvo salvo4_1 = new Salvo(gp4, salvoLocation4_1, 2);
+            Salvo salvo4_2 = new Salvo(gp3, salvoLocation4_2, 3);
             Salvo salvo5 = new Salvo(gp5, salvoLocation6, 1);
             Salvo salvo6 = new Salvo(gp6, salvoLocation6, 2);
 
             // adding salvo into GamePlayer
             gp1.addSalvo(salvo1_0);
             gp1.addSalvo(salvo1_1);
+            gp1.addSalvo(salvo1_2);
             gp2.addSalvo(salvo2_0);
             gp2.addSalvo(salvo2_1);
+            gp2.addSalvo(salvo2_2);
             gp3.addSalvo(salvo3_0);
             gp3.addSalvo(salvo3_1);
+            gp3.addSalvo(salvo3_2);
             gp4.addSalvo(salvo4_0);
             gp4.addSalvo(salvo4_1);
+            gp4.addSalvo(salvo4_2);
             gp5.addSalvo(salvo5);
             gp6.addSalvo(salvo6);
 
             // saving salvoes in salvoRepository
             salvoRepository.save(salvo1_0);
             salvoRepository.save(salvo1_1);
+            salvoRepository.save(salvo1_2);
             salvoRepository.save(salvo2_0);
             salvoRepository.save(salvo2_1);
+            salvoRepository.save(salvo2_2);
             salvoRepository.save(salvo3_0);
             salvoRepository.save(salvo3_1);
             salvoRepository.save(salvo4_0);
