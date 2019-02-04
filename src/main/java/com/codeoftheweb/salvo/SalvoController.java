@@ -16,9 +16,7 @@ public class SalvoController {
     @Autowired
     private GamePlayerRepository gamePlayerRepo;
     @Autowired
-    private ShipRepository shipRepository;
-    @Autowired
-    private SalvoRepository salvoRepository;
+    private ScoreRepository scoreRepository;
 
     @RequestMapping(value = "/api/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public Map<String, Object> getGameInfo(@PathVariable long gamePlayerId) {
@@ -26,7 +24,7 @@ public class SalvoController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("id", gamePlayer.getGame().getId());
-        result.put("date", gamePlayer.getGame().getDate());
+        result.put("date", gamePlayer.getGame().getCreated());
         result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
         result.put("ships", getShipInfo(gamePlayer));
         result.put("salvoes", getSalvoInfo(gamePlayer.getGame().getGamePlayers()));
@@ -71,10 +69,8 @@ public class SalvoController {
 
             Map<String, Object> tempMap = new HashMap<>();
             tempMap.put("gameId", game.getId());
-            tempMap.put("date", game.getDate());
+            tempMap.put("date", game.getCreated());
             tempMap.put("gamePlayers", getListOfGamePlayers(game.getGamePlayers()));
-
-//            System.out.println(tempMap);
 
             result.add(tempMap);
         });
@@ -89,6 +85,7 @@ public class SalvoController {
             Map<String, Object> result = new HashMap<>();
             result.put("id", gamePlayer.getId());
             result.put("player", getPlayerInfo(gamePlayer));
+            result.put("score", gamePlayer.getScore().getScore());
 
             gamePlayersList.add(result);
         });
@@ -104,4 +101,13 @@ public class SalvoController {
 
         return result;
     }
+
+//    private List<String> getScore(GamePlayer gamePlayer) {
+//        scoreRepository.findAll().forEach(score -> {
+//            if (score.getPlayer() === gamePlayer) {
+//
+//            }
+//        });
+//        return null;
+//    }
 }

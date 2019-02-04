@@ -20,7 +20,7 @@ public class SalvoApplication {
     @Bean
     public CommandLineRunner initDat(PlayerRepository playerRepository, GameRepository gameRepository,
                                      GamePlayerRepository gamePlayerRepository, ShipRepository shipRepository,
-                                     SalvoRepository salvoRepository) {
+                                     SalvoRepository salvoRepository, ScoreRepository scoreRepository) {
         return (args) -> {
 
             // initialize and save Player
@@ -241,7 +241,7 @@ public class SalvoApplication {
             Salvo salvo4_0 = new Salvo(gp4, salvoLocation4_0, 1);
             Salvo salvo4_1 = new Salvo(gp4, salvoLocation4_1, 2);
             Salvo salvo4_2 = new Salvo(gp3, salvoLocation4_2, 3);
-            Salvo salvo5 = new Salvo(gp5, salvoLocation6, 1);
+            Salvo salvo5 = new Salvo(gp5, salvoLocation5, 1);
             Salvo salvo6 = new Salvo(gp6, salvoLocation6, 2);
 
             // adding salvo into GamePlayer
@@ -274,6 +274,38 @@ public class SalvoApplication {
             salvoRepository.save(salvo5);
             salvoRepository.save(salvo6);
 
+
+            // initialize scores
+            Score score1_1 = new Score(3);
+            Score score1_2 = new Score(2);
+            Score score2_1 = new Score(2);
+            Score score2_2 = new Score(1);
+            Score score3_1 = new Score(0);
+            Score score3_2 = new Score(1);
+
+            // add scores to games and players
+            firstGame.addScore(score1_1);
+            firstGame.addScore(score1_2);
+            firstPlayer.addScore(score1_1);
+            secondPlayer.addScore(score1_2);
+
+            secondGame.addScore(score2_1);
+            secondGame.addScore(score2_2);
+            thirdPlayer.addScore(score2_1);
+            fourthPlayer.addScore(score2_2);
+
+            thirdGame.addScore(score3_1);
+            thirdGame.addScore(score3_2);
+            fifthPlayer.addScore(score3_1);
+            sixthPlayer.addScore(score3_2);
+
+            // save scores
+            scoreRepository.save(score1_1);
+            scoreRepository.save(score1_2);
+            scoreRepository.save(score2_1);
+            scoreRepository.save(score2_2);
+            scoreRepository.save(score3_1);
+            scoreRepository.save(score3_2);
         };
     }
 }

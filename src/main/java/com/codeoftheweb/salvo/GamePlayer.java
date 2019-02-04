@@ -39,7 +39,6 @@ public class GamePlayer {
         this.game = game;
         this.player = player;
         this.created = new Date();
-//        this.ships = new HashSet<>();
     }
 
     // getters
@@ -94,6 +93,10 @@ public class GamePlayer {
     public void addSalvo(Salvo salvo) {
         salvo.setGamePlayer(this);
         this.salvoes.add(salvo);
+    }
+
+    public Score getScore() {
+        return player.getScore(game);
     }
 }
 
