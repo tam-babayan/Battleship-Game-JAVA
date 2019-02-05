@@ -3,10 +3,12 @@ new Vue ({
 
     data: {
         games: [],
+        leaderBoard: []
     },
 
     mounted() {
         this.getGameInfo()
+        this.getLeaderBoardInfo()
     },
 
     computed: {
@@ -24,6 +26,15 @@ new Vue ({
                 .get("/api/games")
                 .then(response => {
                     this.games = response.data
+                })
+                .catch(error => console.log(error))
+        },
+        getLeaderBoardInfo() {
+            axios
+                .get("/api/games/scores")
+                .then(response => {
+                    this.leaderBoard = response.data
+                    console.log(this.leaderBoard)
                 })
                 .catch(error => console.log(error))
         }

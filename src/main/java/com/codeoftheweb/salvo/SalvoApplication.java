@@ -28,14 +28,12 @@ public class SalvoApplication {
             Player secondPlayer = new Player("c.obrian@ctu.gov");
             Player thirdPlayer = new Player("kim_bauer@mail.com");
             Player fourthPlayer = new Player("t.almeida@ctu.gov");
-            Player fifthPlayer = new Player("c.obrian@ctu.gov");
-            Player sixthPlayer = new Player("kim_bauer@mail.com");
             playerRepository.save(firstPlayer);
             playerRepository.save(secondPlayer);
             playerRepository.save(thirdPlayer);
             playerRepository.save(fourthPlayer);
-            playerRepository.save(fifthPlayer);
-            playerRepository.save(sixthPlayer);
+            playerRepository.save(secondPlayer);
+            playerRepository.save(thirdPlayer);
 
 
             // initialize and save Game
@@ -52,8 +50,8 @@ public class SalvoApplication {
             GamePlayer gp2 = new GamePlayer(firstGame, secondPlayer);
             GamePlayer gp3 = new GamePlayer(secondGame, thirdPlayer);
             GamePlayer gp4 = new GamePlayer(secondGame, fourthPlayer);
-            GamePlayer gp5 = new GamePlayer(thirdGame, fifthPlayer);
-            GamePlayer gp6 = new GamePlayer(thirdGame, sixthPlayer);
+            GamePlayer gp5 = new GamePlayer(thirdGame, secondPlayer);
+            GamePlayer gp6 = new GamePlayer(thirdGame, thirdPlayer);
             gamePlayerRepository.save(gp1);
             gamePlayerRepository.save(gp2);
             gamePlayerRepository.save(gp3);
@@ -274,14 +272,13 @@ public class SalvoApplication {
             salvoRepository.save(salvo5);
             salvoRepository.save(salvo6);
 
-
             // initialize scores
-            Score score1_1 = new Score(3);
-            Score score1_2 = new Score(2);
-            Score score2_1 = new Score(2);
-            Score score2_2 = new Score(1);
-            Score score3_1 = new Score(0);
-            Score score3_2 = new Score(1);
+            Score score1_1 = new Score(1);
+            Score score1_2 = new Score(0);
+            Score score2_1 = new Score(0.5);
+            Score score2_2 = new Score(0.5);
+            Score score3_1 = new Score(1);
+            Score score3_2 = new Score(0);
 
             // add scores to games and players
             firstGame.addScore(score1_1);
@@ -296,8 +293,8 @@ public class SalvoApplication {
 
             thirdGame.addScore(score3_1);
             thirdGame.addScore(score3_2);
-            fifthPlayer.addScore(score3_1);
-            sixthPlayer.addScore(score3_2);
+            secondPlayer.addScore(score3_1);
+            thirdPlayer.addScore(score3_2);
 
             // save scores
             scoreRepository.save(score1_1);

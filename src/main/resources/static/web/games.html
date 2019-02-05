@@ -7,18 +7,40 @@
 <body>
     <h1>Salvo</h1>
     <hr/>
-    <table id="app">
-        <thead> Games</thead>
-        <tbody>
-            <tr v-for = "game in formattedGames">
-                <td>{{game.gameId}}</td>
-                <td>{{game.date}}</td>
-                <td>{{game.gamePlayers[0].player.email}}</td>
-                <td>{{game.gamePlayers[1].player.email}}</td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="app">
+        <table>
+            <thead> Games</thead>
+            <tbody>
+                <tr v-for = "game in formattedGames">
+                    <td>{{game.gameId}}</td>
+                    <td>{{game.date}}</td>
+                    <td>{{game.gamePlayers[0].player.email}}</td>
+                    <td>{{game.gamePlayers[1].player.email}}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <hr/>
+        <table>
+            <thead> LeaderBoard</thead>
+            <tbody>
+                <th>Id</th>
+                <th>Player</th>
+                <th>Total</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Ties</th>
+                <tr v-for = "player in leaderBoard">
+                    <td>{{player.player_id}}</td>
+                    <td>{{player.player_email}}</td>
+                    <td>{{player.total}}</td>
+                    <td>{{player.wins}}</td>
+                    <td>{{player.losses}}</td>
+                    <td>{{player.ties}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://momentjs.com/downloads/moment.min.js"></script>

@@ -17,6 +17,8 @@ public class SalvoController {
     private GamePlayerRepository gamePlayerRepo;
     @Autowired
     private ScoreRepository scoreRepository;
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @RequestMapping(value = "/api/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public Map<String, Object> getGameInfo(@PathVariable long gamePlayerId) {
@@ -61,6 +63,42 @@ public class SalvoController {
         return result;
     }
 
+    @RequestMapping("api/games/scores")
+    public List<Map<String, Object>> createLeaderBoardJSON () {
+        List<Map<String, Object>> result = new ArrayList<>();
+        playerRepository.findAll().forEach(player -> {
+            Map<String, Object> tempMap = new HashMap<>();
+            tempMap.put("player_id", player.getId());
+            tempMap.put("player_email", player.getUserName());
+            tempMap.put("wins", getWinsCount(player, 1));
+            tempMap.put("losses", getWinsCount(player, 0));
+            tempMap.put("ties", getWinsCount(player, 0.5));
+            tempMap.put("total", getTotal(player));
+
+            result.add(tempMap);
+        });
+
+        return result;
+    }
+
+    private double getWinsCount(Player player, double playerScore) {
+        double count = 0;
+        for (Score score : player.getScores()) {
+            if(score.getScore() == playerScore) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private double getTotal(Player player) {
+        double sum = 0;
+        for( Score score : player.getScores()) {
+            sum += score.getScore();
+        }
+        return sum;
+    }
+
     @RequestMapping("api/games")
     public List<Map<String, Object>> getAllGames() {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -93,7 +131,6 @@ public class SalvoController {
         return gamePlayersList;
     }
 
-
     private Map<String, Object> getPlayerInfo(GamePlayer gamePlayer) {
         Map<String, Object> result = new HashMap<>();
         result.put("id", gamePlayer.getPlayer().getId());
@@ -101,13 +138,4 @@ public class SalvoController {
 
         return result;
     }
-
-//    private List<String> getScore(GamePlayer gamePlayer) {
-//        scoreRepository.findAll().forEach(score -> {
-//            if (score.getPlayer() === gamePlayer) {
-//
-//            }
-//        });
-//        return null;
-//    }
 }
