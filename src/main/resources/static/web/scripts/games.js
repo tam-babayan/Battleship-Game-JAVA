@@ -34,6 +34,7 @@ new Vue ({
                 .get("/api/games/scores")
                 .then(response => {
                     this.leaderBoard = response.data
+                    this.leaderBoard.sort((a, b) => (a.total < b.total) ? 1 : -1);
                     console.log(this.leaderBoard)
                 })
                 .catch(error => console.log(error))

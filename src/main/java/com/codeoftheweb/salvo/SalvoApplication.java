@@ -273,8 +273,8 @@ public class SalvoApplication {
             salvoRepository.save(salvo6);
 
             // initialize scores
-            Score score1_1 = new Score(1);
-            Score score1_2 = new Score(0);
+            Score score1_1 = new Score(0);
+            Score score1_2 = new Score(1);
             Score score2_1 = new Score(0.5);
             Score score2_2 = new Score(0.5);
             Score score3_1 = new Score(1);
