@@ -21,11 +21,15 @@ public class Player {
     private Set<Score> scores = new HashSet<>();
 
     private String userName;
+    private String password;
 
 
     // constructors
-    public Player(String userName) {
+
+
+    public Player(String userName, String password) {
         this.userName = userName;
+        this.password = password;
     }
 
     public Player() {
@@ -49,6 +53,10 @@ public class Player {
         this.userName = userName;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     // getters
     public long getId() {
         return id;
@@ -64,6 +72,10 @@ public class Player {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     // methods

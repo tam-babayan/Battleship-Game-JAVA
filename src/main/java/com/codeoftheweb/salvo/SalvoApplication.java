@@ -24,10 +24,10 @@ public class SalvoApplication {
         return (args) -> {
 
             // initialize and save Player
-            Player firstPlayer = new Player("j.bauer@ctu.gov ");
-            Player secondPlayer = new Player("c.obrian@ctu.gov");
-            Player thirdPlayer = new Player("kim_bauer@mail.com");
-            Player fourthPlayer = new Player("t.almeida@ctu.gov");
+            Player firstPlayer = new Player("j.bauer@ctu.gov ", "24");
+            Player secondPlayer = new Player("c.obrian@ctu.gov", "42");
+            Player thirdPlayer = new Player("kim_bauer@mail.com", "kb");
+            Player fourthPlayer = new Player("t.almeida@ctu.gov", "mole");
             playerRepository.save(firstPlayer);
             playerRepository.save(secondPlayer);
             playerRepository.save(thirdPlayer);
