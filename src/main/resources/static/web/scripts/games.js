@@ -3,7 +3,8 @@ new Vue ({
 
     data: {
         games: [],
-        leaderBoard: []
+        leaderBoard: [],
+        currentPlayer: []
     },
 
     mounted() {
@@ -14,7 +15,7 @@ new Vue ({
     computed: {
         formattedGames() {
             return this.games.map(one => {
-                one.date = moment(one.date).format("hh:mm A");
+                one.date = moment(one.date).format('DD.MM.YYYY HH:mm');
                 return one
             })
         }
@@ -25,7 +26,9 @@ new Vue ({
             axios
                 .get("/api/games")
                 .then(response => {
-                    this.games = response.data
+                    this.games = response.data.games
+                    this.currentPlayer = response.data.player
+                    console.log(this.gamelist)
                 })
                 .catch(error => console.log(error))
         },
@@ -38,6 +41,18 @@ new Vue ({
                     console.log(this.leaderBoard)
                 })
                 .catch(error => console.log(error))
+        },
+        logIn() {
+            fetch('/api/login', {
+                    credentials: 'include',
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `userName=${ form[0].value }&password=${ form[1].value }`,
+                })
+//            location.reload()
         }
     }
 })
