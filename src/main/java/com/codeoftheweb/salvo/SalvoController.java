@@ -1,6 +1,9 @@
 package com.codeoftheweb.salvo;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -100,7 +103,23 @@ public class SalvoController {
     }
 
     @RequestMapping("api/games")
-    public List<Map<String, Object>> getAllGames() {
+    public Map<String, Object> getAllGames (Authentication authentication) {
+        Map<String, Object> result = new HashMap<>();
+
+        if(!isGuest(authentication)) {
+            Player currentPlayer = getCurrentPlayer(authentication);
+            result.put("player", getPlayerInfo(currentPlayer));
+        } else {
+            result.put("player", null);
+        }
+
+        result.put("games", getListOfGames());
+
+        return result;
+    }
+
+
+    private List<Map<String, Object>> getListOfGames() {
         List<Map<String, Object>> result = new ArrayList<>();
 
         gameRepo.findAll().forEach(game -> {
@@ -122,7 +141,7 @@ public class SalvoController {
 
             Map<String, Object> result = new HashMap<>();
             result.put("id", gamePlayer.getId());
-            result.put("player", getPlayerInfo(gamePlayer));
+            result.put("player", getPlayerInfo(gamePlayer.getPlayer()));
             result.put("score", gamePlayer.getScore().getScore());
 
             gamePlayersList.add(result);
@@ -131,11 +150,19 @@ public class SalvoController {
         return gamePlayersList;
     }
 
-    private Map<String, Object> getPlayerInfo(GamePlayer gamePlayer) {
+    private Map<String, Object> getPlayerInfo(Player player) {
         Map<String, Object> result = new HashMap<>();
-        result.put("id", gamePlayer.getPlayer().getId());
-        result.put("email", gamePlayer.getPlayer().getUserName());
+        result.put("id", player.getId());
+        result.put("email", player.getUserName());
 
         return result;
+    }
+
+    public Player getCurrentPlayer(Authentication authentication) {
+        return playerRepository.findByUserName(authentication.getName());
+    }
+
+    private boolean isGuest(Authentication authentication) {
+        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 }
