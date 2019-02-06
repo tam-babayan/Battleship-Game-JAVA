@@ -2,12 +2,11 @@ package com.codeoftheweb.salvo;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -23,6 +22,27 @@ public class SalvoController {
     @Autowired
     private PlayerRepository playerRepository;
 
+
+    @RequestMapping(path = "api/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, String password) {
+        if (userName.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+        Player player = playerRepository.findByUserName(userName);
+        if (player != null) {
+            return new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.CONFLICT);
+        }
+        Player newPlayer = playerRepository.save(new Player(userName, password));
+        return new ResponseEntity<>(makeMap("Player", newPlayer.getUserName()), HttpStatus.CREATED);
+    }
+
+    private Map<String, Object> makeMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
+    }
+
+
     @RequestMapping(value = "/api/game_view/{gamePlayerId}", method = RequestMethod.GET)
     public Map<String, Object> getGameInfo(@PathVariable long gamePlayerId) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
@@ -36,6 +56,7 @@ public class SalvoController {
 
         return result;
     }
+
 
     private List<Map<String, Object>> getSalvoInfo(Set<GamePlayer> gamePlayers) {
         List<Map<String, Object>> result =  new ArrayList<>();
@@ -52,6 +73,7 @@ public class SalvoController {
         return result;
     }
 
+
     private List<Map<String, Object>> getShipInfo(GamePlayer gamePlayer) {
         List<Map<String, Object>> result = new ArrayList<>();
 
@@ -65,6 +87,7 @@ public class SalvoController {
         System.out.println(result);
         return result;
     }
+
 
     @RequestMapping("api/games/scores")
     public List<Map<String, Object>> createLeaderBoardJSON () {
@@ -84,6 +107,7 @@ public class SalvoController {
         return result;
     }
 
+
     private double getWinsCount(Player player, double playerScore) {
         double count = 0;
         for (Score score : player.getScores()) {
@@ -94,6 +118,7 @@ public class SalvoController {
         return count;
     }
 
+
     private double getTotal(Player player) {
         double sum = 0;
         for( Score score : player.getScores()) {
@@ -101,6 +126,7 @@ public class SalvoController {
         }
         return sum;
     }
+
 
     @RequestMapping("api/games")
     public Map<String, Object> getAllGames (Authentication authentication) {
@@ -135,6 +161,7 @@ public class SalvoController {
         return result;
     }
 
+
     private List<Map<String, Object>> getListOfGamePlayers(Set<GamePlayer> gamePlayers) {
         List<Map<String, Object>> gamePlayersList = new ArrayList<>();
         gamePlayers.forEach(gamePlayer -> {
@@ -158,9 +185,11 @@ public class SalvoController {
         return result;
     }
 
+
     public Player getCurrentPlayer(Authentication authentication) {
         return playerRepository.findByUserName(authentication.getName());
     }
+
 
     private boolean isGuest(Authentication authentication) {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
