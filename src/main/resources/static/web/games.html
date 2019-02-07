@@ -41,14 +41,18 @@
             </tbody>
         </table>
         <hr/>
-        <form id="form" onsubmit="return false">
+        <form id="logInForm" onsubmit="return false">
             <label for="name"><b>Username</b></label>
             <input type="text" placeholder="Enter Username" name="name" required>
             <label for="pwd"><b>Password</b></label>
             <input type="password" placeholder="Enter Password" name="pwd" required>
             <button type="submit" @click="logIn">Login</button>
         </form>
-        <div>User: {{loggedInPlayyer}}</div>
+        <div v-if="loggedInPlayyer != null">User: {{loggedInPlayyer}}</div>
+        <div v-else="alert"></div>
+        <form id="logOutForm" onsubmit="return false">
+            <button type="submit" @click="logOut()">Logout</button>
+        </form>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>

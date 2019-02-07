@@ -5,8 +5,7 @@ new Vue ({
         games: [],
         leaderBoard: [],
         currentPlayer: [],
-        loggedInPlayyer: ' ',
-        isLoggedIn: false
+        loggedInPlayyer: ' '
 
     },
 
@@ -47,7 +46,7 @@ new Vue ({
                 .catch(error => console.log(error))
         },
         logIn() {
-            const form = document.getElementById("form")
+            const form = document.getElementById("logInForm")
             fetch('/api/login', {
                     credentials: 'include',
                     method: 'POST',
@@ -57,7 +56,6 @@ new Vue ({
                     },
                     body: `userName=${ form["name"].value }&password=${ form["pwd"].value }`,
                 })
-                .then(this.isLoggedIn = true)
                 .then(location.reload())
 
         },
@@ -68,6 +66,25 @@ new Vue ({
                     this.loggedInPlayyer = response.data.player.email
                 })
                 .catch(error => console.log(error))
+        },
+
+        alert() {
+            alert("LogIn Failed")
+        },
+
+        logOut() {
+            const form = document.getElementById("logInForm")
+                fetch('/api/logout', {
+                        credentials: 'include',
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `userName=${ form["name"].value }&password=${ form["pwd"].value }`,
+                    })
+                    .then(location.reload())
+
         }
     }
 })
