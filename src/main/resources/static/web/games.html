@@ -41,18 +41,22 @@
             </tbody>
         </table>
         <hr/>
-        <form id="logInForm" onsubmit="return false">
-            <label for="name"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="name" required>
-            <label for="pwd"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="pwd" required>
-            <button type="submit" @click="logIn">Login</button>
-        </form>
-        <div v-if="loggedInPlayyer != null">User: {{loggedInPlayyer}}</div>
-        <div v-else="alert"></div>
-        <form id="logOutForm" onsubmit="return false">
-            <button type="submit" @click="logOut()">Logout</button>
-        </form>
+        <div v-if="isLoggedIn == false">
+            <form id="logInForm" @click.prevent="handleFormSubmit">
+                <label for="name"><b>Username</b></label>
+                <input v-model="username" type="email" placeholder="Enter Username" name="name" required>
+                <label for="pwd"><b>Password</b></label>
+                <input v-model="password" type="password" placeholder="Enter Password" name="pwd" required>
+                <button type="submit" name="login">Login</button>
+                <button type="submit" name="signup">Signup</button>
+            </form>
+        </div>
+        <div v-else>
+            <p>User: {{currentPlayer.email}}</p>
+            <form id="logOutForm" onsubmit="return false">
+                <button type="submit" @click="logOut()">Logout</button>
+            </form>
+        </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
