@@ -4,12 +4,16 @@ new Vue ({
     data: {
         games: [],
         leaderBoard: [],
-        currentPlayer: []
+        currentPlayer: [],
+        loggedInPlayyer: ' ',
+        isLoggedIn: false
+
     },
 
     mounted() {
         this.getGameInfo()
         this.getLeaderBoardInfo()
+        this.getPlayerEmail()
     },
 
     computed: {
@@ -28,7 +32,7 @@ new Vue ({
                 .then(response => {
                     this.games = response.data.games
                     this.currentPlayer = response.data.player
-                    console.log(this.gamelist)
+//                    console.log(this.gamelist)
                 })
                 .catch(error => console.log(error))
         },
@@ -38,11 +42,12 @@ new Vue ({
                 .then(response => {
                     this.leaderBoard = response.data
                     this.leaderBoard.sort((a, b) => (a.total < b.total) ? 1 : -1);
-                    console.log(this.leaderBoard)
+//                    console.log(this.leaderBoard)
                 })
                 .catch(error => console.log(error))
         },
         logIn() {
+            const form = document.getElementById("form")
             fetch('/api/login', {
                     credentials: 'include',
                     method: 'POST',
@@ -50,9 +55,19 @@ new Vue ({
                         'Accept': 'application/json',
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    body: `userName=${ form[0].value }&password=${ form[1].value }`,
+                    body: `userName=${ form["name"].value }&password=${ form["pwd"].value }`,
                 })
-//            location.reload()
+                .then(this.isLoggedIn = true)
+                .then(location.reload())
+
+        },
+        getPlayerEmail() {
+            axios
+                .get('/api/games')
+                .then(response => {
+                    this.loggedInPlayyer = response.data.player.email
+                })
+                .catch(error => console.log(error))
         }
     }
 })

@@ -351,15 +351,15 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/**").permitAll()
 //                .antMatchers("/**").hasAuthority("USER");
-//                .antMatchers("/api/login/**").hasAuthority("USER")
+                .antMatchers("/api/login/**").permitAll();
 //                .antMatchers("/api/logout/**").hasAuthority("USER")
 
 
         http.formLogin()
-                .usernameParameter("name")
-                .passwordParameter("pwd")
+                .usernameParameter("userName")
+                .passwordParameter("password")
                 .loginPage("/api/login");
 
         http.logout().logoutUrl("/api/logout");

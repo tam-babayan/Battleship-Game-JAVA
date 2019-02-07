@@ -186,7 +186,7 @@ public class SalvoController {
     }
 
 
-    public Player getCurrentPlayer(Authentication authentication) {
+    private Player getCurrentPlayer(Authentication authentication) {
         return playerRepository.findByUserName(authentication.getName());
     }
 
