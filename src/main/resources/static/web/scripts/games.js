@@ -46,10 +46,10 @@ new Vue ({
         })
         .catch(error => console.log(error));
     },
-    handleFormSubmit(e) {
-      if (e.target.name == "login") {
+    handleFormSubmit(event) {
+      if (event.target.name == "login") {
         this.logIn();
-      } else if (e.target.name == "signup") {
+      } else if (event.target.name == "signup") {
         this.signUp();
       }
     },
@@ -113,6 +113,7 @@ new Vue ({
         switch (response.status) {
           case 201:
             this.getLeaderBoardInfo();
+            this.logIn();
             this.username = "";
             this.password = "";
             break;
@@ -121,6 +122,30 @@ new Vue ({
             break;
         }
       });
-    }
+    },
+
+    redirectToGameView(id) {
+        window.location.replace("http://localhost:8080/web/game.html?gp=" + id)
+    },
+
+    createNewGame() {
+        fetch('/api/games', {
+            credentials: "include",
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+        })
+        .then(response => {
+          if (response.ok) {
+              return response.json();
+          }
+        })
+        .then (response => {
+            console.log(response);
+            window.location.replace("http://localhost:8080/web/game.html?gp=" + response.gpid);
+        })
+   }
   }
 })

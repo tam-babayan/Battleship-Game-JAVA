@@ -5,42 +5,7 @@
     <title>Games</title>
 </head>
 <body>
-    <h1>Salvo</h1>
-    <hr/>
-    <div id="app">
-        <table>
-            <thead> Games</thead>
-            <tbody>
-                <tr v-for = "game in formattedGames">
-                    <td>{{game.gameId}}</td>
-                    <td>{{game.date}}</td>
-                    <td>{{game.gamePlayers[0].player.email}}</td>
-                    <td>{{game.gamePlayers[1].player.email}}</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-        <hr/>
-        <table>
-            <thead> LeaderBoard</thead>
-            <tbody>
-                <th>Id</th>
-                <th>Player</th>
-                <th>Total</th>
-                <th>Wins</th>
-                <th>Losses</th>
-                <th>Ties</th>
-                <tr v-for = "player in leaderBoard">
-                    <td>{{player.player_id}}</td>
-                    <td>{{player.player_email}}</td>
-                    <td>{{player.total}}</td>
-                    <td>{{player.wins}}</td>
-                    <td>{{player.losses}}</td>
-                    <td>{{player.ties}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <hr/>
+    <div id="app" class="d-flex ">
         <div v-if="isLoggedIn == false">
             <form id="logInForm" @click.prevent="handleFormSubmit">
                 <label for="name"><b>Username</b></label>
@@ -56,6 +21,70 @@
             <form id="logOutForm" onsubmit="return false">
                 <button type="submit" @click="logOut()">Logout</button>
             </form>
+        </div>
+        <hr/>
+        <div >
+            <div>Games</div>
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">Game ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Player 1</th>
+                            <th scope="col">Player 2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for = "game in formattedGames">
+                            <th scope="row">{{game.gameId}}</th>
+                            <td>{{game.date}}</td>
+                            <td>
+                                <span v-if="game.gamePlayers[0]">
+                                    {{game.gamePlayers[0].player.email}}
+                                </span>
+                            </td>
+                            <td>
+                                <span v-if="game.gamePlayers[1]">
+                                    {{game.gamePlayers[1].player.email}}
+                                </span>
+                            </td>
+                            <td>
+                                <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers" >
+                                    <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id">Resume Game</a>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+        <hr/>
+        <div>
+            <table class="table table-borderless">
+                <div> LeaderBoard</div>
+                <thead>
+                    <tr>
+                        <th scope="col">Player Id</th>
+                        <th scope="col">Player</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Wins</th>
+                        <th scope="col">Losses</th>
+                        <th scope="col">Ties</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for = "player in leaderBoard">
+                        <th>{{player.player_id}}</th>
+                        <td>{{player.player_email}}</td>
+                        <td>{{player.total}}</td>
+                        <td>{{player.wins}}</td>
+                        <td>{{player.losses}}</td>
+                        <td>{{player.ties}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <button @click="createNewGame">Create Game</button>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

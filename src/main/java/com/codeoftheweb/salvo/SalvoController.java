@@ -43,18 +43,38 @@ public class SalvoController {
     }
 
 
+    @RequestMapping(path = "/api/games", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
+        if(!isGuest(authentication)) {
+            Game newGame = new Game(new Date());
+            gameRepo.save(newGame);
+            GamePlayer newGamePlayer = new GamePlayer(newGame, this.getCurrentPlayer(authentication));
+            gamePlayerRepo.save(newGamePlayer);
+            return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+
     @RequestMapping(value = "/api/game_view/{gamePlayerId}", method = RequestMethod.GET)
-    public Map<String, Object> getGameInfo(@PathVariable long gamePlayerId) {
+    public ResponseEntity<Map<String, Object>> getGameInfo(Authentication authentication, @PathVariable long gamePlayerId) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("id", gamePlayer.getGame().getId());
-        result.put("date", gamePlayer.getGame().getCreated());
-        result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
-        result.put("ships", getShipInfo(gamePlayer));
-        result.put("salvoes", getSalvoInfo(gamePlayer.getGame().getGamePlayers()));
+        if(!isGuest(authentication) && getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
+            result.put("id", gamePlayer.getGame().getId());
+            result.put("date", gamePlayer.getGame().getCreated());
+            result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
+            result.put("ships", getShipInfo(gamePlayer));
+            result.put("salvoes", getSalvoInfo(gamePlayer.getGame().getGamePlayers()));
 
-        return result;
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            result.put("error", "You have no permission");
+
+            return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
+        }
     }
 
 
@@ -128,7 +148,7 @@ public class SalvoController {
     }
 
 
-    @RequestMapping("api/games")
+    @RequestMapping(path = "api/games", method = RequestMethod.GET)
     public Map<String, Object> getAllGames (Authentication authentication) {
         Map<String, Object> result = new HashMap<>();
 
@@ -169,7 +189,7 @@ public class SalvoController {
             Map<String, Object> result = new HashMap<>();
             result.put("id", gamePlayer.getId());
             result.put("player", getPlayerInfo(gamePlayer.getPlayer()));
-            result.put("score", gamePlayer.getScore().getScore());
+            result.put("score", gamePlayer.getScore() != null ? gamePlayer.getScore().getScore() : null);
 
             gamePlayersList.add(result);
         });
@@ -195,3 +215,4 @@ public class SalvoController {
         return authentication == null || authentication instanceof AnonymousAuthenticationToken;
     }
 }
+

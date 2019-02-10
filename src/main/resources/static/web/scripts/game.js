@@ -1,16 +1,19 @@
 new Vue ({
     el: "#app",
     data: {
-    gameInfo: [],
-    ships: [],
-    salvoes: [],
-    rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-    columns: ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    playerId: 1
+        gameInfo: [],
+        errorMessage: null,
+        ships: [],
+        salvoes: [],
+        rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
+        columns: ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        playerId: null,
+        gamePlayerId: null
     },
 
     mounted() {
-    this.getgameInfoInfo();
+      this.initParams()
+      this.getCurrentPlayerId();
     },
 
     computed: {
@@ -37,15 +40,33 @@ new Vue ({
     },
 
     methods: {
-    getgameInfoInfo() {
+    initParams() {
+      let url = new URL(window.location.href);
+      this.gamePlayerId = url.searchParams.get("gp");
+    },
+    getCurrentPlayerId() {
       axios
-        .get("http://localhost:8080/api/game_view/" + this.playerId)
+        .get("/api/games")
         .then(response => {
-          this.gameInfo = response.data;
-          this.ships = this.gameInfo.ships;
-          this.salvoes = this.gameInfo.salvoes;
+            if(response.data.player.id != null) {
+              this.playerId = response.data.player.id;
+              this.getGameInfo()
+            }
         })
         .catch(error => console.log(error));
+    },
+
+    getGameInfo() {
+      axios
+        .get("http://localhost:8080/api/game_view/" + this.gamePlayerId)
+        .then(response => {
+            this.gameInfo = response.data;
+            this.ships = this.gameInfo.ships;
+            this.salvoes = this.gameInfo.salvoes;
+        })
+        .catch(error => {
+            this.errorMessage = error.response.data.error;
+        })
     },
     getShipCells(coordinate) {
       for (let i = 0; i < this.ships.length; i++) {
@@ -94,6 +115,10 @@ new Vue ({
           "Content-Type": "application/x-www-form-urlencoded"
         }
       }).then(window.location.replace("/web/games.html"));
+    },
+
+    showErrorMessage() {
+        alert("You have no permission")
     }
 }
 })

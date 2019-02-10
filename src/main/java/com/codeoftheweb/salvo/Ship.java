@@ -26,7 +26,6 @@ public class Ship {
 
     // constructors
 
-
     public Ship() {
     }
 
@@ -54,6 +53,8 @@ public class Ship {
         return gamePlayer;
     }
 
+
+    // setters
     public void setGamePlayer(GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
