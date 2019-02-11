@@ -42,7 +42,6 @@ public class SalvoController {
         return map;
     }
 
-
     @RequestMapping(path = "/api/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
         if(!isGuest(authentication)) {
@@ -53,6 +52,31 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @RequestMapping(path = "/api/game/{gameId}/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> joinGame (Authentication authentication, @PathVariable long gameId) {
+
+        if (isGuest(authentication)) {
+            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
+        }
+        Game currentGame = gameRepo.findOne(gameId);
+
+        if (currentGame == null){
+            return new ResponseEntity<>(makeMap("error", "No such game"), HttpStatus.FORBIDDEN);
+        }
+
+        if (currentGame.getGamePlayers().iterator().next().getPlayer().getId() == this.getCurrentPlayer(authentication).getId()) {
+            return new ResponseEntity<>(makeMap("error", "Can not join your Game"), HttpStatus.FORBIDDEN);
+        }
+
+        if (currentGame.getGamePlayers().size() == 1) {
+            GamePlayer newGamePlayer = new GamePlayer(currentGame, this.getCurrentPlayer(authentication));
+            gamePlayerRepo.save(newGamePlayer);
+            return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(makeMap("error", "Game is full"), HttpStatus.FORBIDDEN);
         }
     }
 

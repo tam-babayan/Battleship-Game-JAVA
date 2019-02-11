@@ -30,6 +30,7 @@ new Vue ({
         .get("/api/games")
         .then(response => {
           this.games = response.data.games;
+          console.log(this.games)
           this.currentPlayer = response.data.player;
           if (this.currentPlayer != null) {
             this.isLoggedIn = true;
@@ -146,6 +147,30 @@ new Vue ({
             console.log(response);
             window.location.replace("http://localhost:8080/web/game.html?gp=" + response.gpid);
         })
-   }
+   },
+
+   joinGame(id) {
+    fetch('/api/game/' + id + '/players', {
+      credentials: "include",
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+          return response.json();
+      }
+    })
+    .then(data => {
+//        console.log(data)
+        window.location.replace("http://localhost:8080/web/game.html?gp=" + data.gpid)
+    })
+    .catch (error => console.log(error))
+    }
+
+
+
   }
 })

@@ -25,37 +25,40 @@
         <hr/>
         <div >
             <div>Games</div>
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th scope="col">Game ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Player 1</th>
-                            <th scope="col">Player 2</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for = "game in formattedGames">
-                            <th scope="row">{{game.gameId}}</th>
-                            <td>{{game.date}}</td>
-                            <td>
-                                <span v-if="game.gamePlayers[0]">
-                                    {{game.gamePlayers[0].player.email}}
-                                </span>
-                            </td>
-                            <td>
-                                <span v-if="game.gamePlayers[1]">
-                                    {{game.gamePlayers[1].player.email}}
-                                </span>
-                            </td>
-                            <td>
-                                <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers" >
-                                    <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id">Resume Game</a>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">Game ID</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Player 1</th>
+                        <th scope="col">Player 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for = "game in formattedGames">
+                        <th scope="row">{{game.gameId}}</th>
+                        <td>{{game.date}}</td>
+                        <td>
+                            <span v-if="game.gamePlayers[0]">
+                                {{game.gamePlayers[0].player.email}}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="game.gamePlayers[1]">
+                                {{game.gamePlayers[1].player.email}}
+                            </span>
+                            <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
+                                <button @click="joinGame(game.gameId)">Join</button>
+                            </span>
+                        </td>
+                        <td>
+                            <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers" >
+                                <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id">Resume</a>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <hr/>
         <div>
@@ -83,7 +86,7 @@
                 </tbody>
             </table>
         </div>
-        <div>
+        <div v-if="isLoggedIn">
             <button @click="createNewGame">Create Game</button>
         </div>
     </div>
