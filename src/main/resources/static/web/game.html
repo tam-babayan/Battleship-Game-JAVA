@@ -38,7 +38,7 @@
                     <tbody>
                     <tr v-for="row in board">
                         <th scope="row">{{row.rowId}}</th>
-                        <td v-for="td in row.column" v-bind:class="{ ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}">
+                        <td v-for="td in row.column" v-bind:class="{ ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}" @click="addShips">
                             <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
                         </td>
                     </tr>

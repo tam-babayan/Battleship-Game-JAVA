@@ -119,6 +119,20 @@ new Vue ({
 
     showErrorMessage() {
         alert("You have no permission")
-    }
+    },
+
+    addShips () {
+        fetch ('/games/players/' + this.gamePlayerId + '/ships', {
+            credentials: "include",
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify([{shipType: "test", shipLocations: ["A1", "A2"]}])
+            })
+            .then (response => this.getGameInfo())
+            .catch (error => console.log(error))
+        }
 }
 })

@@ -92,27 +92,25 @@ public class SalvoController {
 
 
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<List<Ship>> addShips (Authentication authentication, @PathVariable long gamePlayerId,
+    public ResponseEntity<Void> addShips (Authentication authentication, @PathVariable long gamePlayerId,
                                                         @RequestBody List<Ship> ships) {
 
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
-        if (isGuest(authentication)) {
-            return new ResponseEntity<List<Ship>>(HttpStatus.UNAUTHORIZED);
+        if (isGuest(authentication) || !this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if (!this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
-            return new ResponseEntity<List<Ship>>(HttpStatus.UNAUTHORIZED);
+        if (gamePlayer.getShips().size() == 5) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        if (!gamePlayer.getShips().isEmpty()) {
-            return new ResponseEntity<List<Ship>>(HttpStatus.FORBIDDEN);
-        }
-        else {
-            ships.forEach(c -> {
-                c.setGamePlayer(gamePlayer);
-                shipRepository.save(c);
-            });
-            return new ResponseEntity<List<Ship>>(HttpStatus.OK);
-        }
+        ships.forEach(ship -> {
+            gamePlayer.addShip(ship);
+            shipRepository.save(ship);
+        });
+
+        gamePlayerRepo.save(gamePlayer);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
