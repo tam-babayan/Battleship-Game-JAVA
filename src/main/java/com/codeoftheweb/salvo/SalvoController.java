@@ -21,6 +21,8 @@ public class SalvoController {
     private ScoreRepository scoreRepository;
     @Autowired
     private PlayerRepository playerRepository;
+    @Autowired
+    private ShipRepository shipRepository;
 
 
     @RequestMapping(path = "api/players", method = RequestMethod.POST)
@@ -41,6 +43,14 @@ public class SalvoController {
         map.put(key, value);
         return map;
     }
+
+//    private List<Map<String, Object>> makeList(String key, Object value) {
+//        Map<String, Object> map = new HashMap<>();
+//        List<Map<String, Object>> list = new ArrayList<>();
+//        map.put(key, value);
+//        list.add(map);
+//        return list;
+//    }
 
     @RequestMapping(path = "/api/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
@@ -77,6 +87,31 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("gpid", newGamePlayer.getId()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(makeMap("error", "Game is full"), HttpStatus.FORBIDDEN);
+        }
+    }
+
+
+    @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    public ResponseEntity<List<Ship>> addShips (Authentication authentication, @PathVariable long gamePlayerId,
+                                                        @RequestBody List<Ship> ships) {
+
+        GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
+
+        if (isGuest(authentication)) {
+            return new ResponseEntity<List<Ship>>(HttpStatus.UNAUTHORIZED);
+        }
+        if (!this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
+            return new ResponseEntity<List<Ship>>(HttpStatus.UNAUTHORIZED);
+        }
+        if (!gamePlayer.getShips().isEmpty()) {
+            return new ResponseEntity<List<Ship>>(HttpStatus.FORBIDDEN);
+        }
+        else {
+            ships.forEach(c -> {
+                c.setGamePlayer(gamePlayer);
+                shipRepository.save(c);
+            });
+            return new ResponseEntity<List<Ship>>(HttpStatus.OK);
         }
     }
 
@@ -128,7 +163,6 @@ public class SalvoController {
 
             result.add(tempMap);
         });
-        System.out.println(result);
         return result;
     }
 
