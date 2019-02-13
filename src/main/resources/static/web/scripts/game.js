@@ -9,11 +9,11 @@ new Vue ({
         columns: ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         playerId: null,
         gamePlayerId: null,
-        shipTypes: [{name: "Carrier", length: 5},
-                    {name: "Battleship", length: 4},
-                    {name: "Submarine", length: 3},
-                    {name: "Destroyer", length: 3},
-                    {name: "Patrol Boat", length: 2}],
+        shipTypes: [{name: "Carrier", length: 5, isPlaced: false},
+                    {name: "Battleship", length: 4, isPlaced: false},
+                    {name: "Submarine", length: 3, isPlaced: false},
+                    {name: "Destroyer", length: 3, isPlaced: false},
+                    {name: "Patrol Boat", length: 2, isPlaced: false}],
         shipInProcess: {},
         currentShipPositions: [],
         isVertical: false
@@ -33,6 +33,7 @@ new Vue ({
           let anotherObject = {
             columnId: this.columns[j],
             ship: this.getShipCells(this.rows[i] + this.columns[j]),
+            hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
             mySalvoes: this.getMySalvoCell(this.rows[i] + this.columns[j]),
             oponentSalvoes: this.getOponentSalvoes(
               this.rows[i] + this.columns[j]
@@ -143,10 +144,7 @@ new Vue ({
         .catch (error => console.log(error))
     },
 
-    getPossibleShipPosition(a, b, shipLength, isVertical) {
-        for (let i = 0; i < this.currentShipPositions.length; i ++) {
-            document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "white"
-        }
+    updatePossibleShipPosition(a, b, shipLength, isVertical) {
         this.currentShipPositions = []
         for (let i = 0; i < shipLength; i ++) {
             let letter = !isVertical ? a : this.rows[this.rows.indexOf(a)+i]
@@ -158,12 +156,9 @@ new Vue ({
                 letter = this.rows[9 - i]
             }
             let coordinate = letter + number
+
             this.currentShipPositions[i] = coordinate
         }
-        for (let i = 0; i < this.currentShipPositions.length; i ++) {
-            document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "yellow"
-        }
-        console.log(this.currentShipPositions)
     },
 
     placeVerticalShip () {
