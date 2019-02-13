@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -23,42 +23,92 @@
                 <button type="submit" @click="logOut()">Logout</button>
             </form>
         </div>
+            <button onclick="window.open('/web/games.html')">Back</button>
         <div v-for="gamePlayer in this.gameInfo.gamePlayers">
             {{gamePlayer.player.email}}
             <span v-if="gamePlayer.player.id === playerId">(you)</span>
         </div>
-        <div class="d-lg-flex mr-5">
-            <div class="col-sm-12 col-md-12 col-lg-6">
+        <div class="d-lg-flex">
+            <div class="col-sm-12 col-md-12 col-lg-5">
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th scope="col" v-for="column in columns">{{column}}</th>
+                        <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="row in board">
                         <th scope="row">{{row.rowId}}</th>
-                        <td v-for="td in row.column" v-bind:class="{ ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}" @click="addShips">
+                        <td class="cell" v-for="td in row.column" v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}" @click="addShips" :id="row.rowId + td.columnId" @mouseover="position(row.rowId, td.columnId)">
                             <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-6">
+            <div class="col-sm-12 col-md-12 col-lg-5">
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th scope="col" v-for="column in columns">{{column}}</th>
+                        <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr v-for="row in board">
                         <th scope="row">{{row.rowId}}</th>
-                        <td v-for="td in row.column" v-bind:class="{ mySalvoes_cell: td.mySalvoes }">
+                        <td v-for="td in row.column" class="cell" v-bind:class="{ mySalvoes_cell: td.mySalvoes }">
                             <span v-if="td.mySalvoes">{{td.salvoTurn}}</span>
                         </td>
                     </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-3">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col"> Ships</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Carrier</td>
+                            <td v-for="ship in 5" class="shipDemo"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Battleship</td>
+                            <td v-for="ship in 4" class="shipDemo"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Submarine</td>
+                            <td v-for="ship in 3" class="shipDemo"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Destroyer</td>
+                            <td v-for="ship in 3" class="shipDemo"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td scope="row">Patrol Boat </td>
+                            <td v-for="ship in 2" class="shipDemo"></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

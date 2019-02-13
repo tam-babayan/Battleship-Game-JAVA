@@ -130,9 +130,12 @@ new Vue ({
                 "Content-Type": "application/json"
             },
             body: JSON.stringify([{shipType: "test", shipLocations: ["A1", "A2"]}])
-            })
-            .then (response => this.getGameInfo())
-            .catch (error => console.log(error))
-        }
+        })
+        .then (response => this.getGameInfo())
+        .catch (error => console.log(error))
+    },
+    position(a, b) {
+        console.log(a + b)
+    }
 }
 })
