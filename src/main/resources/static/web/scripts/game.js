@@ -15,7 +15,8 @@ new Vue ({
                     {name: "Destroyer", length: 3},
                     {name: "Patrol Boat", length: 2}],
         shipInProcess: {},
-        currentShipPositions: []
+        currentShipPositions: [],
+        isVertical: false
     },
 
     mounted() {
@@ -136,32 +137,37 @@ new Vue ({
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify([{shipType: "test", shipLocations: ["A1", "A2"]}])
+            body: JSON.stringify([{shipType: "test", shipLocations: this.currentShipPositions}])
         })
         .then (response => this.getGameInfo())
         .catch (error => console.log(error))
     },
 
-    getPossibleShipPosition(a, b, shipLength) {
-            for (let i = 0; i < this.currentShipPositions.length; i ++) {
-                document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "white"
-            }
-            this.currentShipPositions = []
+    getPossibleShipPosition(a, b, shipLength, isVertical) {
+        for (let i = 0; i < this.currentShipPositions.length; i ++) {
+            document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "white"
+        }
+        this.currentShipPositions = []
         for (let i = 0; i < shipLength; i ++) {
-            let start = a
-            let end = parseInt(b + i)
-            if (end > 10) {
-                end = 10
-            } else if (start < 1) {
-                start = 1
+            let letter = !isVertical ? a : this.rows[this.rows.indexOf(a)+i]
+            let number = !isVertical ? parseInt(b + i) : b
+            if (!isVertical && number > 10) {
+                number = 10 - i
             }
-            let coordinate = start + end
+            if (isVertical && !letter) {
+                letter = this.rows[9 - i]
+            }
+            let coordinate = letter + number
             this.currentShipPositions[i] = coordinate
         }
         for (let i = 0; i < this.currentShipPositions.length; i ++) {
             document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "yellow"
         }
         console.log(this.currentShipPositions)
+    },
+
+    placeVerticalShip () {
+        this.isVertical = !this.isVertical
     },
 
     getShipInProcess (shipName, shipLength) {

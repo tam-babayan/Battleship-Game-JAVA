@@ -46,7 +46,8 @@
                             <td class="cell" v-for="td in row.column"
                                 v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}"
                                 :id="row.rowId + td.columnId"
-                                @mouseover="getPossibleShipPosition(row.rowId, td.columnId, shipInProcess.length)"
+                                @mouseover="getPossibleShipPosition(row.rowId, td.columnId, shipInProcess.length, isVertical)"
+                                @click="addShips"
                                 >
                                 <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
                             </td>
@@ -77,6 +78,9 @@
                     <thead>
                         <tr>
                             <th scope="col"> Ships</th>
+                            <th>
+                                <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip"> rotate
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,7 +88,8 @@
                         <td> {{shipType.name}}</td>
                         <td class="shipDemo" v-for="cell in shipType.length"
                             @click="getShipInProcess(shipType.name, shipType.length)"></td>
-                        <td></td>
+                        <td>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
