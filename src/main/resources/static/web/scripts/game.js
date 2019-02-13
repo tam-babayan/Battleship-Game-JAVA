@@ -8,7 +8,14 @@ new Vue ({
         rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         columns: ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         playerId: null,
-        gamePlayerId: null
+        gamePlayerId: null,
+        shipTypes: [{name: "Carrier", length: 5},
+                    {name: "Battleship", length: 4},
+                    {name: "Submarine", length: 3},
+                    {name: "Destroyer", length: 3},
+                    {name: "Patrol Boat", length: 2}],
+        shipInProcess: {},
+        currentShipPositions: []
     },
 
     mounted() {
@@ -134,8 +141,34 @@ new Vue ({
         .then (response => this.getGameInfo())
         .catch (error => console.log(error))
     },
-    position(a, b) {
-        console.log(a + b)
+
+    getPossibleShipPosition(a, b, shipLength) {
+            for (let i = 0; i < this.currentShipPositions.length; i ++) {
+                document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "white"
+            }
+            this.currentShipPositions = []
+        for (let i = 0; i < shipLength; i ++) {
+            let start = a
+            let end = parseInt(b + i)
+            if (end > 10) {
+                end = 10
+            } else if (start < 1) {
+                start = 1
+            }
+            let coordinate = start + end
+            this.currentShipPositions[i] = coordinate
+        }
+        for (let i = 0; i < this.currentShipPositions.length; i ++) {
+            document.getElementById(this.currentShipPositions[i]).style.backgroundColor = "yellow"
+        }
+        console.log(this.currentShipPositions)
+    },
+
+    getShipInProcess (shipName, shipLength) {
+        this.shipInProcess = { name:  shipName,
+                               length:  shipLength }
+         console.log(this.shipInProcess)
+         return this.shipInProcess
     }
 }
 })

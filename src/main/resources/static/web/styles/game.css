@@ -2,13 +2,13 @@ body, h1 {
     text-align: center;
 }
 .ship_cell {
-    background: green;
+    background: blue;
 }
 .oponentSalvo_cell {
     background: red;
 }
 .mySalvoes_cell {
-    background: blue;
+    background: green;
 }
 .cell {
     width: 50px;

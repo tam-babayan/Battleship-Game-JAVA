@@ -6,8 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossorigin="anonymous">
     <link rel="stylesheet" href="styles/game.css">
 
     <title>game_view</title>
@@ -30,19 +34,23 @@
         </div>
         <div class="d-lg-flex">
             <div class="col-sm-12 col-md-12 col-lg-5">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="firstTable">
                     <thead>
-                    <tr>
-                        <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
-                    </tr>
+                        <tr>
+                            <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="row in board">
-                        <th scope="row">{{row.rowId}}</th>
-                        <td class="cell" v-for="td in row.column" v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}" @click="addShips" :id="row.rowId + td.columnId" @mouseover="position(row.rowId, td.columnId)">
-                            <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
-                        </td>
-                    </tr>
+                        <tr v-for="row in board">
+                            <th scope="row">{{row.rowId}}</th>
+                            <td class="cell" v-for="td in row.column"
+                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes}"
+                                :id="row.rowId + td.columnId"
+                                @mouseover="getPossibleShipPosition(row.rowId, td.columnId, shipInProcess.length)"
+                                >
+                                <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -56,7 +64,8 @@
                     <tbody>
                     <tr v-for="row in board">
                         <th scope="row">{{row.rowId}}</th>
-                        <td v-for="td in row.column" class="cell" v-bind:class="{ mySalvoes_cell: td.mySalvoes }">
+                        <td v-for="td in row.column" class="cell"
+                            v-bind:class="{ mySalvoes_cell: td.mySalvoes }">
                             <span v-if="td.mySalvoes">{{td.salvoTurn}}</span>
                         </td>
                     </tr>
@@ -71,44 +80,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Carrier</td>
-                            <td v-for="ship in 5" class="shipDemo"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Battleship</td>
-                            <td v-for="ship in 4" class="shipDemo"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Submarine</td>
-                            <td v-for="ship in 3" class="shipDemo"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Destroyer</td>
-                            <td v-for="ship in 3" class="shipDemo"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td scope="row">Patrol Boat </td>
-                            <td v-for="ship in 2" class="shipDemo"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                        </tr>
+                    <tr v-for="shipType in shipTypes">
+                        <td> {{shipType.name}}</td>
+                        <td class="shipDemo" v-for="cell in shipType.length"
+                            @click="getShipInProcess(shipType.name, shipType.length)"></td>
+                        <td></td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -120,7 +97,8 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="scripts/game.js"></script>
