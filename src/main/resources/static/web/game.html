@@ -45,9 +45,8 @@
                             <th scope="row">{{row.rowId}}</th>
                             <td class="cell" v-for="td in row.column"
                                 v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes, cell_yellow:td.hoveredCell}"
-                                @mouseover="updatePossibleShipPosition(row.rowId, td.columnId, shipInProcess.length, isVertical)"
-                                @click="addShips"
-                                >
+                                @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
+                                @click="addShips">
                                 <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
                             </td>
                         </tr>
@@ -85,10 +84,11 @@
                     <tbody>
                     <tr v-for="shipType in shipTypes">
                         <td> {{shipType.name}}</td>
-                        <td class="shipDemo" v-for="cell in shipType.length"
-                            @click="getShipInProcess(shipType.name, shipType.length)"></td>
-                        <td>
+                        <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
+                            @click="getShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
+                            v-for="cell in shipType.length">
                         </td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>

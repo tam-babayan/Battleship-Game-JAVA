@@ -14,7 +14,10 @@ new Vue ({
                     {name: "Submarine", length: 3, isPlaced: false},
                     {name: "Destroyer", length: 3, isPlaced: false},
                     {name: "Patrol Boat", length: 2, isPlaced: false}],
-        shipInProcess: {},
+        shipInProcess: {
+            name: null,
+            length: 0,
+        },
         currentShipPositions: [],
         isVertical: false
     },
@@ -28,9 +31,9 @@ new Vue ({
     board() {
       let array = [];
       for (let i = 0; i < this.rows.length; i++) {
-        let object = { rowId: this.rows[i], column: [] };
+        let rowObject = { rowId: this.rows[i], column: [] };
         for (let j = 1; j < this.columns.length; j++) {
-          let anotherObject = {
+          let columnObject = {
             columnId: this.columns[j],
             ship: this.getShipCells(this.rows[i] + this.columns[j]),
             hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
@@ -40,19 +43,23 @@ new Vue ({
             ),
             salvoTurn: this.getTurn(this.rows[i] + this.columns[j])
           };
-          object.column.push(anotherObject);
+          rowObject.column.push(columnObject);
         }
-        array.push(object);
+        array.push(rowObject);
       }
       return array;
     }
     },
 
     methods: {
+
+    // get the gamePlayerId from url
     initParams() {
       let url = new URL(window.location.href);
       this.gamePlayerId = url.searchParams.get("gp");
     },
+
+    // get the logged in user id and calls a function to get game info
     getCurrentPlayerId() {
       axios
         .get("/api/games")
@@ -65,18 +72,21 @@ new Vue ({
         .catch(error => console.log(error));
     },
 
+    // requests ship and salvo info
     getGameInfo() {
       axios
-        .get("http://localhost:8080/api/game_view/" + this.gamePlayerId)
+        .get("/api/game_view/" + this.gamePlayerId)
         .then(response => {
             this.gameInfo = response.data;
             this.ships = this.gameInfo.ships;
             this.salvoes = this.gameInfo.salvoes;
+            this.updateShipsToPlace ()
         })
         .catch(error => {
             this.errorMessage = error.response.data.error;
         })
     },
+
     getShipCells(coordinate) {
       for (let i = 0; i < this.ships.length; i++) {
         if (this.ships[i].locations.includes(coordinate)) {
@@ -85,6 +95,7 @@ new Vue ({
       }
       return false;
     },
+
     getMySalvoCell(coordinate) {
       for (let i = 0; i < this.salvoes.length; i++) {
         if (
@@ -96,6 +107,7 @@ new Vue ({
       }
       return false;
     },
+
     getOponentSalvoes(coordinate) {
       for (let i = 0; i < this.salvoes.length; i++) {
         if (
@@ -107,6 +119,7 @@ new Vue ({
       }
       return false;
     },
+
     getTurn(coordinate) {
       for (let i = 0; i < this.salvoes.length; i++) {
         if (this.salvoes[i].locations.includes(coordinate)) {
@@ -115,6 +128,8 @@ new Vue ({
       }
       return null;
     },
+
+
     logOut() {
       fetch("/api/logout", {
         credentials: "include",
@@ -126,25 +141,41 @@ new Vue ({
       }).then(window.location.replace("/web/games.html"));
     },
 
-    showErrorMessage() {
-        alert("You have no permission")
-    },
 
+    // posts the data on click
     addShips () {
-        fetch ('/games/players/' + this.gamePlayerId + '/ships', {
-            credentials: "include",
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify([{shipType: "test", shipLocations: this.currentShipPositions}])
-        })
-        .then (response => this.getGameInfo())
-        .catch (error => console.log(error))
+        if (this.currentShipPositions.length) {
+            fetch ('/games/players/' + this.gamePlayerId + '/ships', {
+                credentials: "include",
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify([{shipType: this.shipInProcess.name , shipLocations: this.currentShipPositions}])
+            })
+            .then (response => this.getGameInfo())
+            .then (this.changePlacedStatus(this.shipInProcess.name))
+            .catch (error => console.log(error))
+        }
     },
 
-    updatePossibleShipPosition(a, b, shipLength, isVertical) {
+
+    // changes the isPlaced status of placed ships
+    changePlacedStatus (type) {
+        this.shipInProcess.name = null
+        this.shipInProcess.length = 0
+        this.shipTypes.map(ship => {
+            if (type == ship.name) {
+                ship.isPlaced = true
+            }}
+        )
+    },
+
+    //gets the possible ship positions array on mouseover event
+    updatePossibleShipPosition(a, b) {
+        let shipLength = this.shipInProcess.length
+        let isVertical = this.isVertical
         this.currentShipPositions = []
         for (let i = 0; i < shipLength; i ++) {
             let letter = !isVertical ? a : this.rows[this.rows.indexOf(a)+i]
@@ -157,19 +188,39 @@ new Vue ({
             }
             let coordinate = letter + number
 
+            if (this.getShipCells(coordinate)) {
+                this.currentShipPositions = []
+                return
+            }
+
             this.currentShipPositions[i] = coordinate
         }
     },
 
+    // changes the ship orientation
     placeVerticalShip () {
         this.isVertical = !this.isVertical
     },
 
-    getShipInProcess (shipName, shipLength) {
-        this.shipInProcess = { name:  shipName,
-                               length:  shipLength }
-         console.log(this.shipInProcess)
-         return this.shipInProcess
+
+    // get the ship info on clicking on the ships
+    getShipInProcess (shipName, shipLength, status) {
+        if (!status) {
+            this.shipInProcess.name = shipName
+            this.shipInProcess.length = shipLength
+            console.log(this.shipInProcess)
+        }
+    },
+
+    // changes isPlace status after the page reload for those ships, that are already placed
+    updateShipsToPlace () {
+        this.ships.forEach(ship => {
+            this.shipTypes.map(shipType => {
+                if (shipType.name == ship.type) {
+                    shipType.isPlaced = true
+                }}
+            )
+        })
     }
 }
 })
