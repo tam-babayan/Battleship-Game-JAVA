@@ -128,6 +128,12 @@ public class SalvoController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        salvos.forEach(salvo -> {
+            gamePlayer.addSalvo(salvo);
+            salvoRepository.save(salvo);
+        });
+
+        gamePlayerRepo.save(gamePlayer);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
