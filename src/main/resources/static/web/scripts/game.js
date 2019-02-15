@@ -4,7 +4,7 @@ new Vue ({
         gameInfo: [],
         errorMessage: null,
         ships: [],
-        salvoes: [],
+        salvos: [],
         rows: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
         columns: ["", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         playerId: null,
@@ -19,6 +19,7 @@ new Vue ({
             length: 0,
         },
         currentShipPositions: [],
+        overlapShipPositions: [],
         isVertical: false
     },
 
@@ -37,8 +38,9 @@ new Vue ({
             columnId: this.columns[j],
             ship: this.getShipCells(this.rows[i] + this.columns[j]),
             hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
-            mySalvoes: this.getMySalvoCell(this.rows[i] + this.columns[j]),
-            oponentSalvoes: this.getOponentSalvoes(
+            overlapCell: this.overlapShipPositions.includes(this.rows[i] + this.columns[j]),
+            mysalvos: this.getMySalvoCell(this.rows[i] + this.columns[j]),
+            oponentsalvos: this.getOponentsalvos(
               this.rows[i] + this.columns[j]
             ),
             salvoTurn: this.getTurn(this.rows[i] + this.columns[j])
@@ -79,7 +81,7 @@ new Vue ({
         .then(response => {
             this.gameInfo = response.data;
             this.ships = this.gameInfo.ships;
-            this.salvoes = this.gameInfo.salvoes;
+            this.salvos = this.gameInfo.salvos;
             this.updateShipsToPlace ()
         })
         .catch(error => {
@@ -97,10 +99,10 @@ new Vue ({
     },
 
     getMySalvoCell(coordinate) {
-      for (let i = 0; i < this.salvoes.length; i++) {
+      for (let i = 0; i < this.salvos.length; i++) {
         if (
-          this.salvoes[i].player === this.playerId &&
-          this.salvoes[i].locations.includes(coordinate)
+          this.salvos[i].player === this.playerId &&
+          this.salvos[i].locations.includes(coordinate)
         ) {
           return true;
         }
@@ -108,11 +110,11 @@ new Vue ({
       return false;
     },
 
-    getOponentSalvoes(coordinate) {
-      for (let i = 0; i < this.salvoes.length; i++) {
+    getOponentsalvos(coordinate) {
+      for (let i = 0; i < this.salvos.length; i++) {
         if (
-          this.salvoes[i].player != this.playerId &&
-          this.salvoes[i].locations.includes(coordinate)
+          this.salvos[i].player != this.playerId &&
+          this.salvos[i].locations.includes(coordinate)
         ) {
           return true;
         }
@@ -121,9 +123,9 @@ new Vue ({
     },
 
     getTurn(coordinate) {
-      for (let i = 0; i < this.salvoes.length; i++) {
-        if (this.salvoes[i].locations.includes(coordinate)) {
-          return this.salvoes[i].turn;
+      for (let i = 0; i < this.salvos.length; i++) {
+        if (this.salvos[i].locations.includes(coordinate)) {
+          return this.salvos[i].turn;
         }
       }
       return null;
@@ -172,11 +174,12 @@ new Vue ({
         )
     },
 
-    //gets the possible ship positions array on mouseover event
+    //gets the possible ship coordinates array on mouseover event
     updatePossibleShipPosition(a, b) {
         let shipLength = this.shipInProcess.length
         let isVertical = this.isVertical
         this.currentShipPositions = []
+        let isOverlap = false
         for (let i = 0; i < shipLength; i ++) {
             let letter = !isVertical ? a : this.rows[this.rows.indexOf(a)+i]
             let number = !isVertical ? parseInt(b + i) : b
@@ -188,12 +191,18 @@ new Vue ({
             }
             let coordinate = letter + number
 
-            if (this.getShipCells(coordinate)) {
-                this.currentShipPositions = []
-                return
+            if (this.getShipCells(coordinate) || this.isBorderedShipPlaced(letter, number)) {
+                isOverlap = true
             }
 
             this.currentShipPositions[i] = coordinate
+        }
+
+        if (isOverlap) {
+            this.overlapShipPositions = this.currentShipPositions
+            this.currentShipPositions = []
+        } else {
+            this.overlapShipPositions = []
         }
     },
 
@@ -202,6 +211,24 @@ new Vue ({
         this.isVertical = !this.isVertical
     },
 
+    isBorderedShipPlaced(letter, number) {
+        let cellAbove = this.rows[this.rows.indexOf(letter) - 1] + parseInt(number)
+        let cellBottom = this.rows[this.rows.indexOf(letter) + 1] + parseInt(number)
+        let CellRight = letter + parseInt(number + 1)
+        let CellLeft = letter + parseInt(number - 1)
+        let arr = []
+        arr.push(cellAbove)
+        arr.push(cellBottom)
+        arr.push(CellRight)
+        arr.push(CellLeft)
+        for (let i = 0; i < arr.length; i ++) {
+            if(this.getShipCells(arr[i])) {
+                return true
+            }
+        }
+
+        return false
+    },
 
     // get the ship info on clicking on the ships
     getShipInProcess (shipName, shipLength, status) {

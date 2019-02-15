@@ -44,7 +44,7 @@
                         <tr v-for="row in board">
                             <th scope="row">{{row.rowId}}</th>
                             <td class="cell" v-for="td in row.column"
-                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes, cell_yellow:td.hoveredCell}"
+                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes, cell_yellow:td.hoveredCell, cell_red:td.overlapCell}"
                                 @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
                                 @click="addShips">
                                 <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>

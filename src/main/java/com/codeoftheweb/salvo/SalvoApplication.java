@@ -225,7 +225,7 @@ public class SalvoApplication {
             List<String> salvoLocation5 = new ArrayList<>();
             List<String> salvoLocation6 = new ArrayList<>();
 
-            //create location for salvoes
+            //create location for salvos
             salvoLocation1_0.add("H9");
             salvoLocation1_1.add("A6");
             salvoLocation1_2.add("G3");
@@ -241,7 +241,7 @@ public class SalvoApplication {
             salvoLocation5.add("E1");
             salvoLocation6.add("I9");
 
-            // initialize and save salvoes
+            // initialize and save salvos
             Salvo salvo1_0 = new Salvo(gp1, salvoLocation1_0, 1);
             Salvo salvo1_1 = new Salvo(gp1, salvoLocation1_1, 2);
             Salvo salvo1_2 = new Salvo(gp1, salvoLocation1_2, 3);
@@ -273,7 +273,7 @@ public class SalvoApplication {
             gp5.addSalvo(salvo5);
             gp6.addSalvo(salvo6);
 
-            // saving salvoes in salvoRepository
+            // saving salvos in salvoRepository
             salvoRepository.save(salvo1_0);
             salvoRepository.save(salvo1_1);
             salvoRepository.save(salvo1_2);
