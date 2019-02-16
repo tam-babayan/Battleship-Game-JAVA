@@ -13,6 +13,9 @@
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
           crossorigin="anonymous">
     <link rel="stylesheet" href="styles/game.css">
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"-->
+          <!--integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"-->
+          <!--crossorigin="anonymous">-->
 
     <title>game_view</title>
 </head>
@@ -44,7 +47,7 @@
                         <tr v-for="row in board">
                             <th scope="row">{{row.rowId}}</th>
                             <td class="cell" v-for="td in row.column"
-                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes, cell_yellow:td.hoveredCell, cell_red:td.overlapCell}"
+                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
                                 @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
                                 @click="addShips">
                                 <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
@@ -54,7 +57,9 @@
                 </table>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-5">
-                <table class="table table-bordered">
+                <div id="counter">{{salvoCounter}} shot</div>
+                <button @click="addSalvo">Fire</button>
+                <table class="table table-bordered" id="secondTable">
                     <thead>
                     <tr>
                         <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
@@ -64,8 +69,10 @@
                     <tr v-for="row in board">
                         <th scope="row">{{row.rowId}}</th>
                         <td v-for="td in row.column" class="cell"
-                            v-bind:class="{ mySalvoes_cell: td.mySalvoes }">
-                            <span v-if="td.mySalvoes">{{td.salvoTurn}}</span>
+                            v-bind:class="{mySalvos_cell: td.mySalvos, salvoInprocess_cell: td.salvoInprocessCell}"
+                            @click="setSalvoInProcess(row.rowId, td.columnId)"
+                            >
+                            <span v-if="td.mySalvos">{{td.salvoTurn}}</span>
                         </td>
                     </tr>
                     </tbody>
@@ -85,7 +92,7 @@
                     <tr v-for="shipType in shipTypes">
                         <td> {{shipType.name}}</td>
                         <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
-                            @click="getShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
+                            @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
                             v-for="cell in shipType.length">
                         </td>
                         <td></td>

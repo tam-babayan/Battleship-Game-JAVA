@@ -20,7 +20,10 @@ new Vue ({
         },
         currentShipPositions: [],
         overlapShipPositions: [],
-        isVertical: false
+        isVertical: false,
+        salvoInProcess: [],
+        salvoCounter: 5,
+        salvoTurn: 1
     },
 
     mounted() {
@@ -39,7 +42,8 @@ new Vue ({
             ship: this.getShipCells(this.rows[i] + this.columns[j]),
             hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
             overlapCell: this.overlapShipPositions.includes(this.rows[i] + this.columns[j]),
-            mysalvos: this.getMySalvoCell(this.rows[i] + this.columns[j]),
+            salvoInprocessCell: this.salvoInProcess.includes(this.rows[i] + this.columns[j]),
+            mySalvos: this.getMySalvoCell(this.rows[i] + this.columns[j]),
             oponentsalvos: this.getOponentsalvos(
               this.rows[i] + this.columns[j]
             ),
@@ -83,10 +87,13 @@ new Vue ({
             this.ships = this.gameInfo.ships;
             this.salvos = this.gameInfo.salvos;
             this.updateShipsToPlace ()
+            this.updateSalvoTurn()
+            console.log(this.salvos)
         })
         .catch(error => {
             this.errorMessage = error.response.data.error;
         })
+
     },
 
     getShipCells(coordinate) {
@@ -101,7 +108,7 @@ new Vue ({
     getMySalvoCell(coordinate) {
       for (let i = 0; i < this.salvos.length; i++) {
         if (
-          this.salvos[i].player === this.playerId &&
+          this.salvos[i].player == this.gamePlayerId &&
           this.salvos[i].locations.includes(coordinate)
         ) {
           return true;
@@ -113,7 +120,7 @@ new Vue ({
     getOponentsalvos(coordinate) {
       for (let i = 0; i < this.salvos.length; i++) {
         if (
-          this.salvos[i].player != this.playerId &&
+          this.salvos[i].player != this.gamePlayerId &&
           this.salvos[i].locations.includes(coordinate)
         ) {
           return true;
@@ -144,7 +151,7 @@ new Vue ({
     },
 
 
-    // posts the data on click
+    // posts ship data on click
     addShips () {
         if (this.currentShipPositions.length) {
             fetch ('/games/players/' + this.gamePlayerId + '/ships', {
@@ -230,8 +237,8 @@ new Vue ({
         return false
     },
 
-    // get the ship info on clicking on the ships
-    getShipInProcess (shipName, shipLength, status) {
+    // gets the ship info on clicking on the ships
+    setShipInProcess (shipName, shipLength, status) {
         if (!status) {
             this.shipInProcess.name = shipName
             this.shipInProcess.length = shipLength
@@ -248,6 +255,54 @@ new Vue ({
                 }}
             )
         })
-    }
+    },
+
+    setSalvoInProcess(letter, number) {
+        let coordinate = letter + number
+        if (!this.salvoInProcess.includes(coordinate) && this.salvoInProcess.length <= 4 && !this.isSalvoPlaced(coordinate)) {
+            this.salvoInProcess.push(coordinate)
+            this.salvoCounter --
+        } else if (this.salvoInProcess.includes(coordinate)){
+            this.salvoInProcess.splice(this.salvoInProcess.indexOf(coordinate), 1 );
+            this.salvoCounter ++
+        }
+        console.log(this.salvoInProcess)
+        console.log(this.salvoCounter)
+    },
+
+
+    isSalvoPlaced(coordinate) {
+        for ( let i = 0; i < this.salvos.length; i++) {
+            if (this.salvos[i].locations.includes(coordinate)) {
+                return true
+            }
+        }
+        return false
+    },
+
+    updateSalvoTurn() {
+         this.salvoTurn = Math.max.apply(Math, this.salvos.map(o => {
+            return o.turn
+        }))
+    },
+
+
+    // posts salvo data on click
+        addSalvo () {
+            this.salvoTurn += 1
+            fetch ('/games/players/' + this.gamePlayerId + '/salvos', {
+                credentials: "include",
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify([{salvoLocations: this.salvoInProcess, turn: this.salvoTurn}])
+            })
+            .then (response => this.getGameInfo())
+            .then (() => {this.salvoInProcess = []})
+            .then (this.salvoCounter = 5)
+            .catch (error => console.log(error))
+        }
 }
 })

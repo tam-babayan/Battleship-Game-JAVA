@@ -7,7 +7,7 @@ body, h1 {
 .oponentSalvo_cell {
     background: red;
 }
-.mySalvoes_cell {
+.mySalvos_cell {
     background: green;
 }
 .cell {
@@ -17,8 +17,8 @@ body, h1 {
 .cell_yellow {
     background-color: yellow;
 }
-.cell_red {
-    background-color: red;
+.cell_pink {
+    background-color: pink;
 }
 .shipsToPlace {
     width: 50px;
@@ -32,4 +32,16 @@ body, h1 {
     height: 50px;
     background: white;
     border: 1px solid grey;
+}
+
+#secondTable td:hover {
+    background: grey;
+}
+
+#counter {
+background-color: orange;
+}
+
+.salvoInprocess_cell {
+    background-color: orange;
 }
