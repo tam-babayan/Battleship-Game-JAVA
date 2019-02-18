@@ -148,7 +148,7 @@ public class SalvoController {
             result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
             result.put("ships", getShipInfo(gamePlayer));
             result.put("salvos", getSalvoInfo(gamePlayer.getGame().getGamePlayers()));
-
+            result.put("opponentShips", getOpponentShips(gamePlayer.getGame().getGamePlayers(), gamePlayerId));
             return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             result.put("error", "You have no permission");
@@ -157,6 +157,48 @@ public class SalvoController {
         }
     }
 
+
+    private List<Map<String, Object>> getOpponentShips(Set<GamePlayer> gamePlayers, long gamePlayerId) {
+        List<Map<String, Object>> ships = new ArrayList<>();
+        Optional<GamePlayer> opponent = gamePlayers
+                .stream()
+                .filter(gamePlayer -> gamePlayer.getId() != gamePlayerId)
+                .findFirst();
+
+        GamePlayer currentPlayer = gamePlayers
+                .stream()
+                .filter(gamePlayer -> gamePlayer.getId() == gamePlayerId)
+                .findFirst()
+                .orElse(new GamePlayer());
+
+        opponent.ifPresent(gamePlayer -> gamePlayer.getShips().forEach(ship -> {
+            Map<String, Object> tempShip = new HashMap<>();
+            List<String> hiitedLocations = getHitedLocations(ship, currentPlayer.getsalvos());
+
+            if (hiitedLocations.size() > 0) {
+                tempShip.put("locations", hiitedLocations);
+                tempShip.put("type", hiitedLocations.size() == ship.getShipLocations().size() ? ship.getShipType() : null);
+
+                ships.add(tempShip);
+            }
+        }));
+
+        return ships;
+    }
+
+    private List<String> getHitedLocations(Ship ship, Set<Salvo> salvos) {
+        List<String> locations = new ArrayList<>();
+
+        ship.getShipLocations().forEach(location -> {
+            salvos.forEach(salvo -> {
+                if (salvo.getSalvoLocations().contains(location)) {
+                    locations.add(location);
+                }
+            });
+        });
+
+        return locations;
+    }
 
     private List<Map<String, Object>> getSalvoInfo(Set<GamePlayer> gamePlayers) {
         List<Map<String, Object>> result =  new ArrayList<>();
@@ -172,6 +214,7 @@ public class SalvoController {
 
         return result;
     }
+
 
 
     private List<Map<String, Object>> getShipInfo(GamePlayer gamePlayer) {

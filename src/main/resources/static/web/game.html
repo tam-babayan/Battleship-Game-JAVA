@@ -14,8 +14,8 @@
           crossorigin="anonymous">
     <link rel="stylesheet" href="styles/game.css">
     <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"-->
-          <!--integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"-->
-          <!--crossorigin="anonymous">-->
+    <!--integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"-->
+    <!--crossorigin="anonymous">-->
 
     <title>game_view</title>
 </head>
@@ -47,7 +47,7 @@
                         <tr v-for="row in board">
                             <th scope="row">{{row.rowId}}</th>
                             <td class="cell" v-for="td in row.column"
-                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvoes, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
+                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
                                 @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
                                 @click="addShips">
                                 <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
@@ -71,7 +71,7 @@
                         <td v-for="td in row.column" class="cell"
                             v-bind:class="{mySalvos_cell: td.mySalvos, salvoInprocess_cell: td.salvoInprocessCell}"
                             @click="setSalvoInProcess(row.rowId, td.columnId)"
-                            >
+                        >
                             <span v-if="td.mySalvos">{{td.salvoTurn}}</span>
                         </td>
                     </tr>
@@ -109,7 +109,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="scripts/game.js"></script>
