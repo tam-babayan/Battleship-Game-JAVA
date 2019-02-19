@@ -47,10 +47,10 @@
                         <tr v-for="row in board">
                             <th scope="row">{{row.rowId}}</th>
                             <td class="cell" v-for="td in row.column"
-                                v-bind:class="{ship_cell: td.ship, oponentSalvo_cell: td.oponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
+                                v-bind:class="{ship_cell: td.ship, opponentSalvo_cell: td.opponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
                                 @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
                                 @click="addShips">
-                                <span v-if="td.oponentSalvoes">{{td.salvoTurn}}</span>
+                                <span v-if="td.opponentSalvoes">{{td.salvoTurn}}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -69,7 +69,8 @@
                     <tr v-for="row in board">
                         <th scope="row">{{row.rowId}}</th>
                         <td v-for="td in row.column" class="cell"
-                            v-bind:class="{mySalvos_cell: td.mySalvos, salvoInprocess_cell: td.salvoInprocessCell}"
+                            v-bind:class="{mySalvos_cell: td.mySalvos, salvoInprocess_cell: td.salvoInProcessCell,
+                            opponentHitShip_cell :td.opponentShip, opponentSunkShips_cell : td.opponentSunkShips}"
                             @click="setSalvoInProcess(row.rowId, td.columnId)"
                         >
                             <span v-if="td.mySalvos">{{td.salvoTurn}}</span>
@@ -97,6 +98,41 @@
                         </td>
                         <td></td>
                     </tr>
+                    </tbody>
+                </table>
+                <hr/>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Turn
+                            </th>
+                            <th>
+                                Ship
+                            </th>
+                            <th>
+                                Left
+                            </th>
+                            <th>
+                                Sunk
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="hitShip in hitShips">
+                            <td>
+                                {{hitShip.ship}}
+                            </td>
+                            <td>
+                                {{hitShip.left}}
+                            </td>
+                            <td v-if="hitShip.sunk != 0">
+                                {{hitShip.turn}}
+                            </td>
+                            <td v-if="hitShip.sunk != 0">
+                                {{hitShip.sunk}}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

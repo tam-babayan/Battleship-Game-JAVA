@@ -173,11 +173,11 @@ public class SalvoController {
 
         opponent.ifPresent(gamePlayer -> gamePlayer.getShips().forEach(ship -> {
             Map<String, Object> tempShip = new HashMap<>();
-            List<String> hiitedLocations = getHitedLocations(ship, currentPlayer.getsalvos());
+            List<String> hitLocations = getHitedLocations(ship, currentPlayer.getsalvos());
 
-            if (hiitedLocations.size() > 0) {
-                tempShip.put("locations", hiitedLocations);
-                tempShip.put("type", hiitedLocations.size() == ship.getShipLocations().size() ? ship.getShipType() : null);
+            if (hitLocations.size() > 0) {
+                tempShip.put("locations", hitLocations);
+                tempShip.put("type", hitLocations.size() == ship.getShipLocations().size() ? ship.getShipType() : null);
 
                 ships.add(tempShip);
             }

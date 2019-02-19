@@ -4,7 +4,7 @@ body, h1 {
 .ship_cell {
     background: blue;
 }
-.oponentSalvo_cell {
+.opponentSalvo_cell {
     background: red;
 }
 .mySalvos_cell {
@@ -44,4 +44,12 @@ background-color: orange;
 
 .salvoInprocess_cell {
     background-color: orange;
+}
+
+.opponentHitShip_cell {
+    background: brown;
+}
+
+.opponentSunkShips_cell {
+    background: blueviolet;
 }

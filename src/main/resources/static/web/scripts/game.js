@@ -23,12 +23,18 @@ new Vue({
         isVertical: false,
         salvoInProcess: [],
         salvoTurn: 0,
-        salvoCounter: 5
+        salvoCounter: 5,
+        opponentShips: [],
+        opponentSunkShips: [],
+        hits: []
     },
 
     mounted() {
-        this.initParams()
+        this.initParams();
         this.getCurrentPlayerId();
+        setInterval(() => {
+            this.getGameInfo()
+        }, 3000);
     },
 
     computed: {
@@ -42,11 +48,11 @@ new Vue({
                         ship: this.getShipCells(this.rows[i] + this.columns[j]),
                         hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
                         overlapCell: this.overlapShipPositions.includes(this.rows[i] + this.columns[j]),
-                        salvoInprocessCell: this.salvoInProcess.includes(this.rows[i] + this.columns[j]),
+                        salvoInProcessCell: this.salvoInProcess.includes(this.rows[i] + this.columns[j]),
                         mySalvos: this.getMySalvoCell(this.rows[i] + this.columns[j]),
-                        oponentSalvos: this.getOponentSalvos(
-                            this.rows[i] + this.columns[j]
-                        ),
+                        opponentSalvos: this.isOpponentSalvos(this.rows[i] + this.columns[j]),
+                        opponentShip: this.isOpponentShips(this.rows[i] + this.columns[j]),
+                        opponentSunkShips: this.getOpponentSunkShips(this.rows[i] + this.columns[j]),
                         salvoTurn: this.getTurn(this.rows[i] + this.columns[j])
                     };
                     rowObject.column.push(columnObject);
@@ -54,6 +60,28 @@ new Vue({
                 array.push(rowObject);
             }
             return array;
+        },
+
+        hitShips() {
+            let hitShips = []
+            for (let i = 0; i < this.ships.length; i++) {
+                let ship = this.ships[i];
+
+                let left = ship.locations.length
+
+                if (this.hits[ship.type]) {
+                    left = left - this.hits[ship.type].locations.length
+                }
+
+                if (left === 0) {
+                    hitShips.push({ship: ship.type, left: left, sunk: "SUNK", turn: this.hits[ship.type].turn});
+                } else {
+                    hitShips.push({ship: ship.type, left: left});
+                }
+            }
+            hitShips.sort((a, b) => (a.ship > b.ship) ? 1 : ((b.ship > a.ship) ? -1 : 0));
+
+            return hitShips
         }
     },
 
@@ -86,14 +114,15 @@ new Vue({
                     this.gameInfo = response.data;
                     this.ships = this.gameInfo.ships;
                     this.salvos = this.gameInfo.salvos;
-                    this.updateShipsToPlace()
-                    this.updateSalvoTurn()
-                    console.log(this.salvos)
+                    this.opponentShips = this.gameInfo.opponentShips;
+                    this.updateShipsToPlace();
+                    this.updateSalvoTurn();
+                    this.getHitInfo();
+                    console.log(this.opponentShips);
                 })
                 .catch(error => {
                     this.errorMessage = error.response.data.error;
                 })
-
         },
 
         getShipCells(coordinate) {
@@ -117,7 +146,7 @@ new Vue({
             return false;
         },
 
-        getOponentSalvos(coordinate) {
+        isOpponentSalvos(coordinate) {
             for (let i = 0; i < this.salvos.length; i++) {
                 if (
                     this.salvos[i].player != this.gamePlayerId &&
@@ -131,13 +160,34 @@ new Vue({
 
         getTurn(coordinate) {
             for (let i = 0; i < this.salvos.length; i++) {
-                if (this.salvos[i].locations.includes(coordinate)) {
+                if (
+                    this.salvos[i].player == this.gamePlayerId &&
+                    this.salvos[i].locations.includes(coordinate)
+                ) {
                     return this.salvos[i].turn;
                 }
             }
             return null;
         },
 
+        isOpponentShips(coordinate) {
+            for (let i = 0; i < this.opponentShips.length; i++) {
+                if (this.opponentShips[i].locations.includes(coordinate)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        getOpponentSunkShips(coordinate) {
+            for (let i = 0; i < this.opponentShips.length; i++) {
+                if (this.opponentShips[i].type != null && this.opponentShips[i].locations.includes(coordinate)) {
+                    return true
+                    // this.opponentSunkShips.push(this.opponentShips[i].type);
+                }
+            }
+            return false;
+        },
 
         logOut() {
             fetch("/api/logout", {
@@ -149,7 +199,6 @@ new Vue({
                 }
             }).then(window.location.replace("/web/games.html"));
         },
-
 
         // posts ship data on click
         addShips() {
@@ -172,11 +221,10 @@ new Vue({
             }
         },
 
-
         // changes the isPlaced status of placed ships
         changePlacedStatus(type) {
-            this.shipInProcess.name = null
-            this.shipInProcess.length = 0
+            this.shipInProcess.name = null;
+            this.shipInProcess.length = 0;
             this.shipTypes.map(ship => {
                     if (type == ship.name) {
                         ship.isPlaced = true
@@ -187,20 +235,20 @@ new Vue({
 
         //gets the possible ship coordinates array on mouseover event
         updatePossibleShipPosition(a, b) {
-            let shipLength = this.shipInProcess.length
-            let isVertical = this.isVertical
-            this.currentShipPositions = []
-            let isOverlap = false
+            let shipLength = this.shipInProcess.length;
+            let isVertical = this.isVertical;
+            this.currentShipPositions = [];
+            let isOverlap = false;
             for (let i = 0; i < shipLength; i++) {
-                let letter = !isVertical ? a : this.rows[this.rows.indexOf(a) + i]
-                let number = !isVertical ? parseInt(b + i) : b
+                let letter = !isVertical ? a : this.rows[this.rows.indexOf(a) + i];
+                let number = !isVertical ? parseInt(b + i) : b;
                 if (!isVertical && number > 10) {
                     number = 10 - i
                 }
                 if (isVertical && !letter) {
                     letter = this.rows[9 - i]
                 }
-                let coordinate = letter + number
+                let coordinate = letter + number;
 
                 if (this.getShipCells(coordinate) || this.isBorderedShipPlaced(letter, number)) {
                     isOverlap = true
@@ -210,7 +258,7 @@ new Vue({
             }
 
             if (isOverlap) {
-                this.overlapShipPositions = this.currentShipPositions
+                this.overlapShipPositions = this.currentShipPositions;
                 this.currentShipPositions = []
             } else {
                 this.overlapShipPositions = []
@@ -223,15 +271,15 @@ new Vue({
         },
 
         isBorderedShipPlaced(letter, number) {
-            let cellAbove = this.rows[this.rows.indexOf(letter) - 1] + parseInt(number)
-            let cellBottom = this.rows[this.rows.indexOf(letter) + 1] + parseInt(number)
-            let CellRight = letter + parseInt(number + 1)
-            let CellLeft = letter + parseInt(number - 1)
-            let arr = []
-            arr.push(cellAbove)
-            arr.push(cellBottom)
-            arr.push(CellRight)
-            arr.push(CellLeft)
+            let cellAbove = this.rows[this.rows.indexOf(letter) - 1] + parseInt(number);
+            let cellBottom = this.rows[this.rows.indexOf(letter) + 1] + parseInt(number);
+            let CellRight = letter + parseInt(number + 1);
+            let CellLeft = letter + parseInt(number - 1);
+            let arr = [];
+            arr.push(cellAbove);
+            arr.push(cellBottom);
+            arr.push(CellRight);
+            arr.push(CellLeft);
             for (let i = 0; i < arr.length; i++) {
                 if (this.getShipCells(arr[i])) {
                     return true
@@ -244,9 +292,8 @@ new Vue({
         // gets the ship info on clicking on the ships
         setShipInProcess(shipName, shipLength, status) {
             if (!status) {
-                this.shipInProcess.name = shipName
-                this.shipInProcess.length = shipLength
-                console.log(this.shipInProcess)
+                this.shipInProcess.name = shipName;
+                this.shipInProcess.length = shipLength;
             }
         },
 
@@ -263,22 +310,20 @@ new Vue({
         },
 
         setSalvoInProcess(letter, number) {
-            let coordinate = letter + number
+            let coordinate = letter + number;
             if (!this.salvoInProcess.includes(coordinate) && this.salvoInProcess.length <= 4 && !this.isSalvoPlaced(coordinate)) {
-                this.salvoInProcess.push(coordinate)
+                this.salvoInProcess.push(coordinate);
                 this.salvoCounter--
             } else if (this.salvoInProcess.includes(coordinate)) {
                 this.salvoInProcess.splice(this.salvoInProcess.indexOf(coordinate), 1);
                 this.salvoCounter++
             }
-            console.log(this.salvoInProcess)
-            console.log(this.salvoCounter)
         },
 
 
         isSalvoPlaced(coordinate) {
             for (let i = 0; i < this.salvos.length; i++) {
-                if (this.salvos[i].locations.includes(coordinate)) {
+                if (this.salvos[i].player == this.gamePlayerId && this.salvos[i].locations.includes(coordinate)) {
                     return true
                 }
             }
@@ -289,16 +334,18 @@ new Vue({
             if (this.salvos.length < 1) {
                 return;
             } else {
-                this.salvoTurn = Math.max.apply(Math, this.salvos.map(o => {
-                    return o.turn
-                }))
+                this.salvoTurn = Math.max.apply(Math, this.salvos
+                    .filter(salvo => salvo.player == this.gamePlayerId)
+                    .map(salvo => {
+                        return salvo.turn
+                    }))
             }
         },
 
 
         // posts salvo data on command Fire
         addSalvo() {
-            this.salvoTurn = this.salvoTurn + 1
+            this.salvoTurn = this.salvoTurn + 1;
             fetch('/games/players/' + this.gamePlayerId + '/salvos', {
                 credentials: "include",
                 method: "POST",
@@ -314,6 +361,31 @@ new Vue({
                 })
                 .then(this.salvoCounter = 5)
                 .catch(error => console.log(error))
+        },
+
+        getHitInfo() {
+            this.hits = []
+            for (let i = 0; i < this.ships.length; i++) {
+                for (let j = 0; j < this.ships[i].locations.length; j++) {
+                    for (let k = 0; k < this.salvos.length; k++) {
+                        if (this.salvos[k].player != this.gamePlayerId) {
+                            for (let h = 0; h < this.salvos[k].locations.length; h++) {
+                                if (this.ships[i].locations[j] == this.salvos[k].locations[h]) {
+                                    if (!this.hits[this.ships[i].type]) {
+                                        this.hits[this.ships[i].type] = {
+                                            locations: [],
+                                            turn: 0
+                                        }
+                                    }
+
+                                    this.hits[this.ships[i].type].locations.push(this.ships[i].locations[j])
+                                    this.hits[this.ships[i].type].turn = Math.max(this.hits[this.ships[i].type].turn, this.salvos[k].turn)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-})
+});
