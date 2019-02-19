@@ -105,9 +105,6 @@
                     <thead>
                         <tr>
                             <th>
-                                Turn
-                            </th>
-                            <th>
                                 Ship
                             </th>
                             <th>
@@ -115,6 +112,9 @@
                             </th>
                             <th>
                                 Sunk
+                            </th>
+                            <th>
+                                Turn
                             </th>
                         </tr>
                     </thead>
@@ -127,10 +127,10 @@
                                 {{hitShip.left}}
                             </td>
                             <td v-if="hitShip.sunk != 0">
-                                {{hitShip.turn}}
-                            </td>
-                            <td v-if="hitShip.sunk != 0">
                                 {{hitShip.sunk}}
+                            </td>
+                            <td>
+                                {{hitShip.turn}}
                             </td>
                         </tr>
                     </tbody>

@@ -32,6 +32,7 @@ new Vue({
     mounted() {
         this.initParams();
         this.getCurrentPlayerId();
+
         setInterval(() => {
             this.getGameInfo()
         }, 3000);
@@ -45,11 +46,11 @@ new Vue({
                 for (let j = 1; j < this.columns.length; j++) {
                     let columnObject = {
                         columnId: this.columns[j],
-                        ship: this.getShipCells(this.rows[i] + this.columns[j]),
+                        ship: this.isShipCells(this.rows[i] + this.columns[j]),
                         hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
                         overlapCell: this.overlapShipPositions.includes(this.rows[i] + this.columns[j]),
                         salvoInProcessCell: this.salvoInProcess.includes(this.rows[i] + this.columns[j]),
-                        mySalvos: this.getMySalvoCell(this.rows[i] + this.columns[j]),
+                        mySalvos: this.isMySalvoCell(this.rows[i] + this.columns[j]),
                         opponentSalvos: this.isOpponentSalvos(this.rows[i] + this.columns[j]),
                         opponentShip: this.isOpponentShips(this.rows[i] + this.columns[j]),
                         opponentSunkShips: this.getOpponentSunkShips(this.rows[i] + this.columns[j]),
@@ -59,6 +60,7 @@ new Vue({
                 }
                 array.push(rowObject);
             }
+
             return array;
         },
 
@@ -66,13 +68,10 @@ new Vue({
             let hitShips = []
             for (let i = 0; i < this.ships.length; i++) {
                 let ship = this.ships[i];
-
                 let left = ship.locations.length
-
                 if (this.hits[ship.type]) {
                     left = left - this.hits[ship.type].locations.length
                 }
-
                 if (left === 0) {
                     hitShips.push({ship: ship.type, left: left, sunk: "SUNK", turn: this.hits[ship.type].turn});
                 } else {
@@ -118,14 +117,14 @@ new Vue({
                     this.updateShipsToPlace();
                     this.updateSalvoTurn();
                     this.getHitInfo();
-                    console.log(this.opponentShips);
+                    // console.log(this.opponentShips);
                 })
                 .catch(error => {
                     this.errorMessage = error.response.data.error;
                 })
         },
 
-        getShipCells(coordinate) {
+        isShipCells(coordinate) {
             for (let i = 0; i < this.ships.length; i++) {
                 if (this.ships[i].locations.includes(coordinate)) {
                     return true;
@@ -134,7 +133,7 @@ new Vue({
             return false;
         },
 
-        getMySalvoCell(coordinate) {
+        isMySalvoCell(coordinate) {
             for (let i = 0; i < this.salvos.length; i++) {
                 if (
                     this.salvos[i].player == this.gamePlayerId &&
@@ -150,7 +149,7 @@ new Vue({
             for (let i = 0; i < this.salvos.length; i++) {
                 if (
                     this.salvos[i].player != this.gamePlayerId &&
-                    this.salvos[i].locations.includes(coordinate) && this.getShipCells(coordinate)
+                    this.salvos[i].locations.includes(coordinate) && this.isShipCells(coordinate)
                 ) {
                     return true;
                 }
@@ -182,8 +181,7 @@ new Vue({
         getOpponentSunkShips(coordinate) {
             for (let i = 0; i < this.opponentShips.length; i++) {
                 if (this.opponentShips[i].type != null && this.opponentShips[i].locations.includes(coordinate)) {
-                    return true
-                    // this.opponentSunkShips.push(this.opponentShips[i].type);
+                    return true;
                 }
             }
             return false;
@@ -250,13 +248,12 @@ new Vue({
                 }
                 let coordinate = letter + number;
 
-                if (this.getShipCells(coordinate) || this.isBorderedShipPlaced(letter, number)) {
+                if (this.isShipCells(coordinate) || this.isBorderedShipPlaced(letter, number)) {
                     isOverlap = true
                 }
 
                 this.currentShipPositions[i] = coordinate
             }
-
             if (isOverlap) {
                 this.overlapShipPositions = this.currentShipPositions;
                 this.currentShipPositions = []
@@ -271,21 +268,16 @@ new Vue({
         },
 
         isBorderedShipPlaced(letter, number) {
-            let cellAbove = this.rows[this.rows.indexOf(letter) - 1] + parseInt(number);
-            let cellBottom = this.rows[this.rows.indexOf(letter) + 1] + parseInt(number);
-            let CellRight = letter + parseInt(number + 1);
-            let CellLeft = letter + parseInt(number - 1);
             let arr = [];
-            arr.push(cellAbove);
-            arr.push(cellBottom);
-            arr.push(CellRight);
-            arr.push(CellLeft);
+            arr.push(this.rows[this.rows.indexOf(letter) - 1] + parseInt(number));
+            arr.push(this.rows[this.rows.indexOf(letter) + 1] + parseInt(number));
+            arr.push(letter + parseInt(number + 1));
+            arr.push(letter + parseInt(number - 1));
             for (let i = 0; i < arr.length; i++) {
-                if (this.getShipCells(arr[i])) {
+                if (this.isShipCells(arr[i])) {
                     return true
                 }
             }
-
             return false
         },
 
@@ -365,27 +357,22 @@ new Vue({
 
         getHitInfo() {
             this.hits = []
-            for (let i = 0; i < this.ships.length; i++) {
-                for (let j = 0; j < this.ships[i].locations.length; j++) {
-                    for (let k = 0; k < this.salvos.length; k++) {
-                        if (this.salvos[k].player != this.gamePlayerId) {
-                            for (let h = 0; h < this.salvos[k].locations.length; h++) {
-                                if (this.ships[i].locations[j] == this.salvos[k].locations[h]) {
-                                    if (!this.hits[this.ships[i].type]) {
-                                        this.hits[this.ships[i].type] = {
-                                            locations: [],
-                                            turn: 0
-                                        }
-                                    }
-
-                                    this.hits[this.ships[i].type].locations.push(this.ships[i].locations[j])
-                                    this.hits[this.ships[i].type].turn = Math.max(this.hits[this.ships[i].type].turn, this.salvos[k].turn)
+            this.ships.forEach(ship => {
+                ship.locations.forEach(shipLocation => {
+                    this.salvos
+                        .filter(salvo => salvo.player != this.gamePlayerId && salvo.locations.includes(shipLocation))
+                        .forEach(salvo => {
+                            if (!this.hits[ship.type]) {
+                                this.hits[ship.type] = {
+                                    locations: [],
+                                    turn: 0
                                 }
                             }
-                        }
-                    }
-                }
-            }
+                            this.hits[ship.type].locations.push(shipLocation)
+                            this.hits[ship.type].turn = Math.max(this.hits[ship.type].turn, salvo.turn)
+                        })
+                });
+            });
         }
     }
 });
