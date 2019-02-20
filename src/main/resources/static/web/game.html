@@ -50,7 +50,7 @@
                                 v-bind:class="{ship_cell: td.ship, opponentSalvo_cell: td.opponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
                                 @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
                                 @click="addShips">
-                                <span v-if="td.opponentSalvoes">{{td.salvoTurn}}</span>
+                                <span v-if="td.opponentSalvoTurn">{{td.opponentSalvoTurn}}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -73,7 +73,7 @@
                             opponentHitShip_cell :td.opponentShip, opponentSunkShips_cell : td.opponentSunkShips}"
                             @click="setSalvoInProcess(row.rowId, td.columnId)"
                         >
-                            <span v-if="td.mySalvos">{{td.salvoTurn}}</span>
+                            <span v-if="td.mySalvoTurn">{{td.mySalvoTurn}}</span>
                         </td>
                     </tr>
                     </tbody>

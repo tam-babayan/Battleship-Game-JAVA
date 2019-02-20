@@ -54,7 +54,8 @@ new Vue({
                         opponentSalvos: this.isOpponentSalvos(this.rows[i] + this.columns[j]),
                         opponentShip: this.isOpponentShips(this.rows[i] + this.columns[j]),
                         opponentSunkShips: this.getOpponentSunkShips(this.rows[i] + this.columns[j]),
-                        salvoTurn: this.getTurn(this.rows[i] + this.columns[j])
+                        mySalvoTurn: this.getMySalvoTurn(this.rows[i] + this.columns[j]),
+                        opponentSalvoTurn: this.getOpponentSalvoTurn(this.rows[i] + this.columns[j])
                     };
                     rowObject.column.push(columnObject);
                 }
@@ -157,11 +158,24 @@ new Vue({
             return false;
         },
 
-        getTurn(coordinate) {
+        getMySalvoTurn(coordinate) {
             for (let i = 0; i < this.salvos.length; i++) {
                 if (
                     this.salvos[i].player == this.gamePlayerId &&
                     this.salvos[i].locations.includes(coordinate)
+                ) {
+                    return this.salvos[i].turn;
+                }
+            }
+            return null;
+        },
+
+        getOpponentSalvoTurn(coordinate) {
+            for (let i = 0; i < this.salvos.length; i++) {
+                if (
+                    this.salvos[i].player != this.gamePlayerId &&
+                    this.salvos[i].locations.includes(coordinate) &&
+                    this.isShipCells(coordinate)
                 ) {
                     return this.salvos[i].turn;
                 }
@@ -323,7 +337,7 @@ new Vue({
         },
 
         updateSalvoTurn() {
-            if (this.salvos.length < 1) {
+            if (this.salvos.length < 1 || this.salvos.player != this.gamePlayerId) {
                 return;
             } else {
                 this.salvoTurn = Math.max.apply(Math, this.salvos

@@ -5,10 +5,10 @@ body, h1 {
     background: blue;
 }
 .opponentSalvo_cell {
-    background: red;
+    background: lightseagreen;
 }
 .mySalvos_cell {
-    background: green;
+    background: #86ffa3;
 }
 .cell {
     width: 50px;
@@ -39,7 +39,7 @@ body, h1 {
 }
 
 #counter {
-background-color: orange;
+background-color: #ffccfc;
 }
 
 .salvoInprocess_cell {
@@ -47,9 +47,9 @@ background-color: orange;
 }
 
 .opponentHitShip_cell {
-    background: brown;
+    background: #1b8622;
 }
 
 .opponentSunkShips_cell {
-    background: blueviolet;
+    background: grey;
 }
