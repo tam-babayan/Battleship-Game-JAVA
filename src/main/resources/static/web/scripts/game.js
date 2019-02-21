@@ -26,7 +26,8 @@ new Vue({
         salvoCounter: 5,
         opponentShips: [],
         opponentSunkShips: [],
-        hits: []
+        hits: [],
+        gameEnded: false
     },
 
     mounted() {
@@ -368,6 +369,7 @@ new Vue({
                 .then(this.salvoCounter = 5)
                 .catch(error => console.log(error))
         },
+
 
         getHitInfo() {
             this.hits = []

@@ -30,6 +30,29 @@ public class SalvoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SalvoApplication.class, args);
+
+        GameState gameState = GameState.GAME_OVER;
+
+        public void GameStateUpdate() {
+            // handle update
+            switch(gameState) {
+                case GAME_OVER:
+                    // createGame() or joinGame()
+                    break;
+                case PLACE_SHIPS:
+                    // addShips()
+                    break;
+                case WAIT_FOR_SHIPS:
+                    // wait
+                    break;
+                case ENTER_SALVOS:
+                    // fireSalvo()
+                    break;
+                case WAIT_FOR_SALVOS:
+                    // wait
+                    break;
+            }
+        }
     }
 
     @Bean

@@ -18,13 +18,12 @@ public class SalvoController {
     @Autowired
     private GamePlayerRepository gamePlayerRepo;
     @Autowired
-    private ScoreRepository scoreRepository;
-    @Autowired
     private PlayerRepository playerRepository;
     @Autowired
     private ShipRepository shipRepository;
     @Autowired
     private SalvoRepository salvoRepository;
+
 
 
     @RequestMapping(path = "api/players", method = RequestMethod.POST)
@@ -88,23 +87,22 @@ public class SalvoController {
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<Void> addShips (Authentication authentication, @PathVariable long gamePlayerId,
                                                         @RequestBody List<Ship> ships) {
+            GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
-        GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
+            if (isGuest(authentication) || !this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            if (gamePlayer.getShips().size() >= 5) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            ships.forEach(ship -> {
+                gamePlayer.addShip(ship);
+                shipRepository.save(ship);
+            });
 
-        if (isGuest(authentication) || !this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        if (gamePlayer.getShips().size() == 5) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        ships.forEach(ship -> {
-            gamePlayer.addShip(ship);
-            shipRepository.save(ship);
-        });
+            gamePlayerRepo.save(gamePlayer);
 
-        gamePlayerRepo.save(gamePlayer);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
@@ -115,7 +113,7 @@ public class SalvoController {
         if (isGuest(authentication) || !getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if (salvos.size() == 5) {
+        if (salvos.size() >= 5) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Set turnList =  new HashSet();
