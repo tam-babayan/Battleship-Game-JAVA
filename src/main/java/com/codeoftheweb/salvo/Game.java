@@ -23,6 +23,7 @@ public class Game {
 
     private Date created;
 
+    private GameState state = GameState.WAIT_FOR_SHIPS;
 
     // constructor
     public Game(Date date) {
@@ -49,6 +50,10 @@ public class Game {
         return created;
     }
 
+    public GameState getState() {
+        return state;
+    }
+
     // setters
 
     public void setId(long id) {
@@ -65,6 +70,10 @@ public class Game {
 
     public void setCreated(Date created) {
         this.created = created;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
     }
 
     // methods

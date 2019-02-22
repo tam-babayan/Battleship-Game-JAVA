@@ -25,7 +25,6 @@ public class SalvoController {
     private SalvoRepository salvoRepository;
 
 
-
     @RequestMapping(path = "api/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, String password) {
         if (userName.isEmpty()) {
@@ -47,7 +46,7 @@ public class SalvoController {
 
     @RequestMapping(path = "/api/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
-        if(!isGuest(authentication)) {
+        if (!isGuest(authentication)) {
             Game newGame = new Game(new Date());
             gameRepo.save(newGame);
             GamePlayer newGamePlayer = new GamePlayer(newGame, this.getCurrentPlayer(authentication));
@@ -59,14 +58,14 @@ public class SalvoController {
     }
 
     @RequestMapping(path = "/api/game/{gameId}/players", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> joinGame (Authentication authentication, @PathVariable long gameId) {
+    public ResponseEntity<Map<String, Object>> joinGame(Authentication authentication, @PathVariable long gameId) {
 
         if (isGuest(authentication)) {
             return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
         }
         Game currentGame = gameRepo.findOne(gameId);
 
-        if (currentGame == null){
+        if (currentGame == null) {
             return new ResponseEntity<>(makeMap("error", "No such game"), HttpStatus.FORBIDDEN);
         }
 
@@ -85,50 +84,79 @@ public class SalvoController {
 
 
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<Void> addShips (Authentication authentication, @PathVariable long gamePlayerId,
-                                                        @RequestBody List<Ship> ships) {
-            GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
+    public ResponseEntity<Void> addShip(Authentication authentication, @PathVariable long gamePlayerId,
+                                        @RequestBody Ship ship) {
+        GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
-            if (isGuest(authentication) || !this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-            if (gamePlayer.getShips().size() >= 5) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-            ships.forEach(ship -> {
-                gamePlayer.addShip(ship);
-                shipRepository.save(ship);
-            });
+        if (isGuest(authentication) || !this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
-            gamePlayerRepo.save(gamePlayer);
+        if (gamePlayer.getGame().getState() != GameState.WAIT_FOR_SHIPS) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
-            return new ResponseEntity<>(HttpStatus.OK);
+        ShipType type = ShipType.value(ship.getShipType());
+
+        if (gamePlayer.getShips()
+                .stream()
+                .anyMatch(existingShip -> type == ShipType.value(existingShip.getShipType()))
+                || ShipType.value(ship.getShipType()) == ShipType.UNKNOWN
+                || ShipType.getLegth(type) != ship.getShipLocations().size()
+                || gamePlayer.getShips().size() >= 5
+        ) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        gamePlayer.addShip(ship);
+        shipRepository.save(ship);
+
+        if (gamePlayer.getGame().getGamePlayers()
+                .stream()
+                .allMatch(gamePlayer1 -> gamePlayer1.getShips().size() == 5)
+        ) {
+            gamePlayer.getGame().setState(GameState.WAIT_FOR_SALVOS);
+        }
+
+        gamePlayerRepo.save(gamePlayer);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
-    public ResponseEntity<Void> fireSalvo (Authentication authentication, @PathVariable long gamePlayerId,
-                                           @RequestBody List<Salvo> salvos) {
+    public ResponseEntity<Void> fireSalvo(Authentication authentication, @PathVariable long gamePlayerId,
+                                          @RequestBody Salvo salvo) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
         if (isGuest(authentication) || !getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if (salvos.size() >= 5) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        Set turnList =  new HashSet();
-        salvos.forEach(salvo -> {
-            int turn = salvo.getTurn();
-            turnList.add(turn);
-        });
-        if (turnList.size() != 1) {
 
+        if (gamePlayer.getGame().getState() != GameState.WAIT_FOR_SALVOS) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        salvos.forEach(salvo -> {
-            gamePlayer.addSalvo(salvo);
-            salvoRepository.save(salvo);
-        });
+
+        Set<Salvo> opponentSalvos = gamePlayer.getGame().getGamePlayers().stream()
+                .filter(gamePlayer1 -> gamePlayer1.getId() != gamePlayer.getId())
+                .findFirst().orElse(new GamePlayer())
+                .getsalvos();
+
+        Set<Salvo> salvos = gamePlayer.getsalvos();
+
+        boolean canFire = salvos.size() == 0
+                || opponentSalvos.stream()
+                .anyMatch(salvo1 -> salvo1.getTurn() == salvo.getTurn() || Math.abs(salvo1.getTurn() - salvo.getTurn()) == 1);
+
+        if (!canFire) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        if (salvo.getSalvoLocations().size() > 5) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        gamePlayer.addSalvo(salvo);
+        salvoRepository.save(salvo);
 
         gamePlayerRepo.save(gamePlayer);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -140,7 +168,7 @@ public class SalvoController {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
         Map<String, Object> result = new HashMap<>();
-        if(!isGuest(authentication) && getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
+        if (!isGuest(authentication) && getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
             result.put("id", gamePlayer.getGame().getId());
             result.put("date", gamePlayer.getGame().getCreated());
             result.put("gamePlayers", getListOfGamePlayers(gamePlayer.getGame().getGamePlayers()));
@@ -199,7 +227,7 @@ public class SalvoController {
     }
 
     private List<Map<String, Object>> getSalvoInfo(Set<GamePlayer> gamePlayers) {
-        List<Map<String, Object>> result =  new ArrayList<>();
+        List<Map<String, Object>> result = new ArrayList<>();
         gamePlayers.forEach(gamePlayer -> {
             gamePlayer.getsalvos().forEach(salvo -> {
                 Map<String, Object> tempMap = new HashMap<>();
@@ -212,7 +240,6 @@ public class SalvoController {
 
         return result;
     }
-
 
 
     private List<Map<String, Object>> getShipInfo(GamePlayer gamePlayer) {
@@ -230,7 +257,7 @@ public class SalvoController {
 
 
     @RequestMapping("api/games/scores")
-    public List<Map<String, Object>> createLeaderBoardJSON () {
+    public List<Map<String, Object>> createLeaderBoardJSON() {
         List<Map<String, Object>> result = new ArrayList<>();
         playerRepository.findAll().forEach(player -> {
             Map<String, Object> tempMap = new HashMap<>();
@@ -251,7 +278,7 @@ public class SalvoController {
     private double getWinsCount(Player player, double playerScore) {
         double count = 0;
         for (Score score : player.getScores()) {
-            if(score.getScore() == playerScore) {
+            if (score.getScore() == playerScore) {
                 count++;
             }
         }
@@ -261,7 +288,7 @@ public class SalvoController {
 
     private double getTotal(Player player) {
         double sum = 0;
-        for( Score score : player.getScores()) {
+        for (Score score : player.getScores()) {
             sum += score.getScore();
         }
         return sum;
@@ -269,10 +296,10 @@ public class SalvoController {
 
 
     @RequestMapping(path = "api/games", method = RequestMethod.GET)
-    public Map<String, Object> getAllGames (Authentication authentication) {
+    public Map<String, Object> getAllGames(Authentication authentication) {
         Map<String, Object> result = new HashMap<>();
 
-        if(!isGuest(authentication)) {
+        if (!isGuest(authentication)) {
             Player currentPlayer = getCurrentPlayer(authentication);
             result.put("player", getPlayerInfo(currentPlayer));
         } else {

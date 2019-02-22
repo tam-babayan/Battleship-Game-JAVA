@@ -22,7 +22,7 @@ new Vue({
         overlapShipPositions: [],
         isVertical: false,
         salvoInProcess: [],
-        salvoTurn: 0,
+        salvoTurn: 1,
         salvoCounter: 5,
         opponentShips: [],
         opponentSunkShips: [],
@@ -214,7 +214,7 @@ new Vue({
         },
 
         // posts ship data on click
-        addShips() {
+        addShip() {
             if (this.currentShipPositions.length) {
                 fetch('/games/players/' + this.gamePlayerId + '/ships', {
                     credentials: "include",
@@ -223,10 +223,10 @@ new Vue({
                         Accept: "application/json",
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify([{
+                    body: JSON.stringify({
                         shipType: this.shipInProcess.name,
                         shipLocations: this.currentShipPositions
-                    }])
+                    })
                 })
                     .then(response => this.getGameInfo())
                     .then(this.changePlacedStatus(this.shipInProcess.name))
@@ -338,21 +338,16 @@ new Vue({
         },
 
         updateSalvoTurn() {
-            if (this.salvos.length < 1 || this.salvos.player != this.gamePlayerId) {
-                return;
-            } else {
-                this.salvoTurn = Math.max.apply(Math, this.salvos
-                    .filter(salvo => salvo.player == this.gamePlayerId)
-                    .map(salvo => {
-                        return salvo.turn
-                    }))
-            }
+            this.salvoTurn = Math.max(this.salvoTurn, Math.max.apply(Math, this.salvos
+                .filter(salvo => salvo.player == this.gamePlayerId)
+                .map(salvo => {
+                    return salvo.turn
+                })) + 1)
         },
 
 
         // posts salvo data on command Fire
         addSalvo() {
-            this.salvoTurn = this.salvoTurn + 1;
             fetch('/games/players/' + this.gamePlayerId + '/salvos', {
                 credentials: "include",
                 method: "POST",
@@ -360,13 +355,16 @@ new Vue({
                     Accept: "application/json",
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify([{salvoLocations: this.salvoInProcess, turn: this.salvoTurn}])
+                body: JSON.stringify({salvoLocations: this.salvoInProcess, turn: this.salvoTurn})
             })
-                .then(response => this.getGameInfo())
-                .then(() => {
+                .then(response => {
+                    if (response.ok) {
+                        this.salvoTurn = this.salvoTurn + 1;
+                        this.getGameInfo()
+                    }
                     this.salvoInProcess = []
+                    this.salvoCounter = 5
                 })
-                .then(this.salvoCounter = 5)
                 .catch(error => console.log(error))
         },
 

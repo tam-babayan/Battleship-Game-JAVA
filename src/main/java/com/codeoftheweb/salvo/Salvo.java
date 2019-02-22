@@ -22,7 +22,7 @@ public class Salvo {
     @Column(name = "salvoLocation")
     private List<String> salvoLocations = new ArrayList<>();
 
-    private int turn;
+    private int turn = 0;
 
     // constructor
 
