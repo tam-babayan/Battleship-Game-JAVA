@@ -92,7 +92,7 @@ public class SalvoController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        if (gamePlayer.getGame().getState() != GameState.WAIT_FOR_SHIPS) {
+        if (gamePlayer.getGame().getState() != GameState.PLACE_SHIPS ) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -111,7 +111,8 @@ public class SalvoController {
         gamePlayer.addShip(ship);
         shipRepository.save(ship);
 
-        if (gamePlayer.getGame().getGamePlayers()
+        if (gamePlayer.getGame().getGamePlayers().size() == 2
+                && gamePlayer.getGame().getGamePlayers()
                 .stream()
                 .allMatch(gamePlayer1 -> gamePlayer1.getShips().size() == 5)
         ) {
@@ -147,11 +148,7 @@ public class SalvoController {
                 || opponentSalvos.stream()
                 .anyMatch(salvo1 -> salvo1.getTurn() == salvo.getTurn() || Math.abs(salvo1.getTurn() - salvo.getTurn()) == 1);
 
-        if (!canFire) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-
-        if (salvo.getSalvoLocations().size() > 5) {
+        if (!canFire || salvo.getSalvoLocations().size() > 5) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -159,7 +156,25 @@ public class SalvoController {
         salvoRepository.save(salvo);
 
         gamePlayerRepo.save(gamePlayer);
+        Optional<Salvo> opponentLatestSalvo = opponentSalvos.stream().max(Comparator.comparingInt(Salvo::getTurn));
+
+        if (opponentLatestSalvo.isPresent() && opponentLatestSalvo.get().getTurn() == salvo.getTurn()) {
+            changeStateToGameOver (gamePlayer.getGame());
+            gameRepo.save(gamePlayer.getGame());
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+
+    private void changeStateToGameOver(Game game) {
+        game.getGamePlayers().forEach(gamePlayer -> {
+            List<Map<String, Object>> ships  = getOpponentShips(game.getGamePlayers(), gamePlayer.getId());
+            if (ships.stream().allMatch(ship -> ship.get("type") != null) && ships.size() == 5) {
+                game.setState(GameState.GAME_OVER);
+            }
+        });
     }
 
 
@@ -182,7 +197,6 @@ public class SalvoController {
             return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
         }
     }
-
 
     private List<Map<String, Object>> getOpponentShips(Set<GamePlayer> gamePlayers, long gamePlayerId) {
         List<Map<String, Object>> ships = new ArrayList<>();

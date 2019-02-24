@@ -38,6 +38,7 @@ new Vue ({
         })
         .catch(error => console.log(error));
     },
+
     getLeaderBoardInfo() {
       axios
         .get("/api/games/scores")
@@ -47,6 +48,7 @@ new Vue ({
         })
         .catch(error => console.log(error));
     },
+
     handleFormSubmit(event) {
       if (event.target.name == "login") {
         this.logIn();
@@ -54,6 +56,7 @@ new Vue ({
         this.signUp();
       }
     },
+
     logIn() {
       fetch("/api/login", {
         credentials: "include",
@@ -62,7 +65,6 @@ new Vue ({
           Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded"
         },
-//        body: `userName=${ form["name"].value }&password=${ form["pwd"].value }`,
         body: `userName=${this.username}&password=${this.password}`
       }).then(response => {
         if (response.status == 200) {
@@ -169,8 +171,5 @@ new Vue ({
     })
     .catch (error => console.log(error))
     }
-
-
-
   }
 })

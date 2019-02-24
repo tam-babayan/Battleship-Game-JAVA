@@ -23,7 +23,7 @@ public class Game {
 
     private Date created;
 
-    private GameState state = GameState.WAIT_FOR_SHIPS;
+    private GameState state = GameState.PLACE_SHIPS;
 
     // constructor
     public Game(Date date) {

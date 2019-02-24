@@ -67,10 +67,10 @@ new Vue({
         },
 
         hitShips() {
-            let hitShips = []
+            let hitShips = [];
             for (let i = 0; i < this.ships.length; i++) {
                 let ship = this.ships[i];
-                let left = ship.locations.length
+                let left = ship.locations.length;
                 if (this.hits[ship.type]) {
                     left = left - this.hits[ship.type].locations.length
                 }
@@ -225,7 +225,7 @@ new Vue({
                     },
                     body: JSON.stringify({
                         shipType: this.shipInProcess.name,
-                        shipLocations: this.currentShipPositions
+                        shipLocations: this.currentShipPositions,
                     })
                 })
                     .then(response => this.getGameInfo())
