@@ -13,30 +13,67 @@
     <title>Games</title>
 </head>
 <body>
-    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Battleship</a>
-    </nav>
-    <!--<div class="bg"></div>-->
-    <img src="styles/img/battleship.jpg" class="img-fluid max-width: 100% height: auto"  alt="Battleship image">
+    <div class="bg"></div>
+    <!--<img src="styles/img/battleship.jpg" class="img-fluid max-width: 100% height: auto"  alt="Battleship image">-->
+
     <div id="app" class="container">
-        <div>
-            <div v-if="isLoggedIn == false">
-                <form id="logInForm" @click.prevent="handleFormSubmit">
-                    <label for="name"><b>Username</b></label>
-                    <input v-model="username" type="email" placeholder="Enter Username" name="name" required>
-                    <label for="pwd"><b>Password</b></label>
-                    <input v-model="password" type="password" placeholder="Enter Password" name="pwd" required>
-                    <button type="submit" name="login">Login</button>
-                    <button type="submit" name="signup">Signup</button>
-                </form>
-            </div>
-            <div v-if="isLoggedIn == true">
-                <p>User: {{currentPlayer.email}}</p>
-                <form id="logOutForm" onsubmit="return false">
-                    <button type="submit" @click="logOut()">Logout</button>
-                </form>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning" id="exampleModalCenterTitle">Log in to Battleship Game</h5>
+                        <div v-if="isLoggedIn == false">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <div v-if="isLoggedIn == false">
+                                <form id="logInForm" @click.prevent="handleFormSubmit">
+                                    <div class="form-group">
+                                        <label for="name" class="text-secondary">Username</label>
+                                        <input v-model="username" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="pwd" class="text-secondary">Password</label>
+                                        <input v-model="password" type="password" class="form-control" placeholder="Password" name="pwd" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-warning" name="login">Login</button>
+                                    <button type="submit" class="btn btn-warning" name="signup">Create an account</button>
+                                </form>
+                            </div>
+                            <div v-else>
+                                <p class="text-white">User: {{currentPlayer.email}}</p>
+                                <form id="logOutForm" onsubmit="return false">
+                                    <button type="submit" class="btn btn-warning" @click="logOut()">Logout</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+            <div>
+                <div v-if="isLoggedIn == false">
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#exampleModalCenter">
+                        Log In
+                    </button>
+                </div>
+                <div v-else>
+                    <span class="text-warning">
+                        {{currentPlayer.email}}
+                    </span>
+                    <button type="submit" class="btn btn-outline-warning" @click="logOut()">Logout</button>
+                </div>
+            </div>
+        </nav>
         <div>
             <div>Games</div>
             <table class="table table-borderless">

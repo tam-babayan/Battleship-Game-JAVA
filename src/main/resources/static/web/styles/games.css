@@ -1,12 +1,21 @@
-/*body, html {*/
-    /*height: 100%;*/
-/*}*/
-/*.bg {*/
-    /*background-image: url("img/battleship.jpg");*/
+body, html {
+    height: 100%;
+}
+.bg {
+    background-image: url("img/battleship.jpg");
 
-    /*height: 100%;*/
+    height: 100%;
 
-    /*background-position: center;*/
-    /*background-repeat: no-repeat;*/
-    /*background-size: cover;*/
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+.modal-content {
+    background-color: rgb(51,51,51);
+}
+
+/*.navbar .dropdown-menu {*/
+    /*background-color: #333A41;*/
 /*}*/
