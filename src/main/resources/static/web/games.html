@@ -2,28 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--Bootstrap Stylesheet-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+
+    <link rel="stylesheet" href="styles/games.css">
     <title>Games</title>
 </head>
 <body>
-    <div id="app" class="d-flex ">
-        <div v-if="isLoggedIn == false">
-            <form id="logInForm" @click.prevent="handleFormSubmit">
-                <label for="name"><b>Username</b></label>
-                <input v-model="username" type="email" placeholder="Enter Username" name="name" required>
-                <label for="pwd"><b>Password</b></label>
-                <input v-model="password" type="password" placeholder="Enter Password" name="pwd" required>
-                <button type="submit" name="login">Login</button>
-                <button type="submit" name="signup">Signup</button>
-            </form>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Battleship</a>
+    </nav>
+    <!--<div class="bg"></div>-->
+    <img src="styles/img/battleship.jpg" class="img-fluid max-width: 100% height: auto"  alt="Battleship image">
+    <div id="app" class="container">
+        <div>
+            <div v-if="isLoggedIn == false">
+                <form id="logInForm" @click.prevent="handleFormSubmit">
+                    <label for="name"><b>Username</b></label>
+                    <input v-model="username" type="email" placeholder="Enter Username" name="name" required>
+                    <label for="pwd"><b>Password</b></label>
+                    <input v-model="password" type="password" placeholder="Enter Password" name="pwd" required>
+                    <button type="submit" name="login">Login</button>
+                    <button type="submit" name="signup">Signup</button>
+                </form>
+            </div>
+            <div v-if="isLoggedIn == true">
+                <p>User: {{currentPlayer.email}}</p>
+                <form id="logOutForm" onsubmit="return false">
+                    <button type="submit" @click="logOut()">Logout</button>
+                </form>
+            </div>
         </div>
-        <div v-else>
-            <p>User: {{currentPlayer.email}}</p>
-            <form id="logOutForm" onsubmit="return false">
-                <button type="submit" @click="logOut()">Logout</button>
-            </form>
-        </div>
-        <hr/>
-        <div >
+        <div>
             <div>Games</div>
             <table class="table table-borderless">
                 <thead>
@@ -60,7 +74,6 @@
                 </tbody>
             </table>
         </div>
-        <hr/>
         <div>
             <table class="table table-borderless">
                 <div> LeaderBoard</div>
@@ -90,10 +103,26 @@
             <button @click="createNewGame">Create Game</button>
         </div>
     </div>
+
+    <!-- Vue.js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <!--Bootstrap 4-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!--Optional JavaScript-->
     <script type="text/javascript" src="scripts/games.js"></script>
 </body>
 </html>
+
