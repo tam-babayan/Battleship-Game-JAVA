@@ -32,11 +32,14 @@ new Vue ({
           this.games = response.data.games;
           console.log(this.games)
           this.currentPlayer = response.data.player;
+        })
+        .finally(() => {
           if (this.currentPlayer != null) {
             this.isLoggedIn = true;
           }
         })
         .catch(error => console.log(error));
+
     },
 
     getLeaderBoardInfo() {
@@ -72,6 +75,11 @@ new Vue ({
           this.username = "";
           this.password = "";
         }
+        if (response.status == 401) {
+          alert("Password is not correct");
+          this.username = "";
+          this.password = "";
+        }
       });
     },
 
@@ -97,11 +105,14 @@ new Vue ({
     signUp() {
       if (!this.validEmail(this.username)) {
         alert(this.username + " is not valid email");
+        this.username = "";
+        this.password = "";
         return;
       }
 
       if (!this.password) {
         alert("password is empty");
+        this.username = "";
         return;
       }
       fetch("/api/players", {
@@ -117,18 +128,14 @@ new Vue ({
           case 201:
             this.getLeaderBoardInfo();
             this.logIn();
-            this.username = "";
-            this.password = "";
             break;
           case 409:
             alert(this.username + " already exists");
+            this.username = "";
+            this.password = "";
             break;
         }
       });
-    },
-
-    redirectToGameView(id) {
-        window.location.replace("http://localhost:8080/web/game.html?gp=" + id)
     },
 
     createNewGame() {

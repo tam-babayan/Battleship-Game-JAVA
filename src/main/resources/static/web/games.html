@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!--Fontawesome Stylesheet-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+          crossorigin="anonymous">
+
     <!--Bootstrap Stylesheet-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -41,11 +46,11 @@
                                         <label for="pwd" class="text-secondary">Password</label>
                                         <input v-model="password" type="password" class="form-control" placeholder="Password" name="pwd" required>
                                     </div>
-                                    <button type="submit" class="btn btn-warning" name="login">Login</button>
-                                    <button type="submit" class="btn btn-warning" name="signup">Create an account</button>
+                                    <button type="submit" class="btn btn-warning" name="login" data-dismiss="modal">Login</button>
+                                    <button type="submit" class="btn btn-warning" name="signup" data-dismiss="modal">Create an account</button>
                                 </form>
                             </div>
-                            <div v-else>
+                            <div v-if="isLoggedIn">
                                 <p class="text-white">User: {{currentPlayer.email}}</p>
                                 <form id="logOutForm" onsubmit="return false">
                                     <button type="submit" class="btn btn-warning" @click="logOut()">Logout</button>
@@ -59,23 +64,37 @@
                 </div>
             </div>
         </div>
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-            <div>
-                <div v-if="isLoggedIn == false">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark row justify-content-between">
+            <div class="col-3 text-warning ml-5 h2">
+                <i class="fas fa-ship"></i>
+            </div>
+            <div class="col-3 align-items-end">
+                <div v-if="isLoggedIn == false" class="d-flex justify-content-end mr-5">
                     <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#exampleModalCenter">
                         Log In
                     </button>
                 </div>
-                <div v-else>
-                    <span class="text-warning">
+                <div v-if="isLoggedIn == true" class="d-flex justify-content-end mr-5">
+                    <span class="text-warning mr-4 mt-1">
                         {{currentPlayer.email}}
                     </span>
                     <button type="submit" class="btn btn-outline-warning" @click="logOut()">Logout</button>
                 </div>
             </div>
         </nav>
-        <div>
-            <div>Games</div>
+
+        <!--SmoothScroll-->
+        <ul class="smooth-scroll list-unstyled">
+            <li>
+                <h5><a href="#games">Games</a></h5>
+            </li>
+            <li>
+                <h5><a href="#leaderBoard">LeaderBoard</a></h5>
+            </li>
+        </ul>
+
+        <div id="games">
+            <h2>Games</h2>
             <table class="table table-borderless">
                 <thead>
                     <tr>
@@ -111,9 +130,9 @@
                 </tbody>
             </table>
         </div>
-        <div>
+        <div id="leaderBoard">
+            <h2> LeaderBoard</h2>
             <table class="table table-borderless">
-                <div> LeaderBoard</div>
                 <thead>
                     <tr>
                         <th scope="col">Player Id</th>
