@@ -18,145 +18,157 @@
     <title>Games</title>
 </head>
 <body>
-    <div class="bg"></div>
-    <!--<img src="styles/img/battleship.jpg" class="img-fluid max-width: 100% height: auto"  alt="Battleship image">-->
-
-    <div id="app" class="container">
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title text-warning" id="exampleModalCenterTitle">Log in to Battleship Game</h5>
-                        <div v-if="isLoggedIn == false">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div>
-                            <div v-if="isLoggedIn == false">
-                                <form id="logInForm" @click.prevent="handleFormSubmit">
-                                    <div class="form-group">
-                                        <label for="name" class="text-secondary">Username</label>
-                                        <input v-model="username" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="pwd" class="text-secondary">Password</label>
-                                        <input v-model="password" type="password" class="form-control" placeholder="Password" name="pwd" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-warning" name="login" data-dismiss="modal">Login</button>
-                                    <button type="submit" class="btn btn-warning" name="signup" data-dismiss="modal">Create an account</button>
-                                </form>
-                            </div>
-                            <div v-if="isLoggedIn">
-                                <p class="text-white">User: {{currentPlayer.email}}</p>
-                                <form id="logOutForm" onsubmit="return false">
-                                    <button type="submit" class="btn btn-warning" @click="logOut()">Logout</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark row justify-content-between">
-            <div class="col-3 text-warning ml-5 h2">
-                <i class="fas fa-ship"></i>
-            </div>
-            <div class="col-3 align-items-end">
-                <div v-if="isLoggedIn == false" class="d-flex justify-content-end mr-5">
-                    <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#exampleModalCenter">
-                        Log In
-                    </button>
-                </div>
-                <div v-if="isLoggedIn == true" class="d-flex justify-content-end mr-5">
-                    <span class="text-warning mr-4 mt-1">
-                        {{currentPlayer.email}}
-                    </span>
-                    <button type="submit" class="btn btn-outline-warning" @click="logOut()">Logout</button>
-                </div>
-            </div>
-        </nav>
-
+    <div class="bg1">
         <!--SmoothScroll-->
         <ul class="smooth-scroll list-unstyled">
-            <li>
-                <h5><a href="#games">Games</a></h5>
+            <li class="p-2">
+                <div class="hovereffect ml-4">
+                    <a class="info" href="#leaderBoard">
+                        <img class="img-fluid" src="styles/img/Leaderboard.png" width="110px" height="110px" alt="">
+                        <span class="text-content text-white h5">See LeaderBoard</span>
+                    </a>
+                </div>
             </li>
-            <li>
-                <h5><a href="#leaderBoard">LeaderBoard</a></h5>
+            <br>
+            <li class="p-2">
+                <div class="hovereffect ml-4">
+                    <a class="info" href="#games">
+                        <img class="img-fluid" src="styles/img/games.png" width="110px" height="110px" alt="">
+                        <span class="text-content text-white h5 ml-3">See Games</span>
+                    </a>
+                </div>
             </li>
         </ul>
+    </div>
+    <div class="bg2">
+        <div id="app" class="container">
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-warning" id="exampleModalCenterTitle">Log in to Battleship Game</h5>
+                            <div v-if="isLoggedIn == false">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <div v-if="isLoggedIn == false">
+                                    <form id="logInForm" @click.prevent="handleFormSubmit">
+                                        <div class="form-group">
+                                            <label for="name" class="text-secondary">Username</label>
+                                            <input v-model="username" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pwd" class="text-secondary">Password</label>
+                                            <input v-model="password" type="password" class="form-control" placeholder="Password" name="pwd" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-warning" name="login" data-dismiss="modal">Login</button>
+                                        <button type="submit" class="btn btn-warning" name="signup" data-dismiss="modal">Create an account</button>
+                                    </form>
+                                </div>
+                                <div v-if="isLoggedIn">
+                                    <p class="text-white">User: {{currentPlayer.email}}</p>
+                                    <form id="logOutForm" onsubmit="return false">
+                                        <button type="submit" class="btn btn-warning" @click="logOut()">Logout</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark row justify-content-between">
+                <div class="col-3 text-warning ml-4 h2">
+                    <i class="fas fa-ship"></i>
+                </div>
+                <div class="col-3 align-items-end">
+                    <div v-if="isLoggedIn == false" class="d-flex justify-content-end mr-5">
+                        <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#exampleModalCenter">
+                            Log In
+                        </button>
+                    </div>
+                    <div v-if="isLoggedIn == true" class="d-flex justify-content-end mr-5">
+                        <span class="text-warning mr-4 mt-1">
+                            {{currentPlayer.email}}
+                        </span>
+                        <button type="submit" class="btn btn-outline-warning" @click="logOut()">Logout</button>
+                    </div>
+                </div>
+            </nav>
 
-        <div id="games">
-            <h2>Games</h2>
-            <table class="table table-borderless">
-                <thead>
-                    <tr>
-                        <th scope="col">Game ID</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Player 1</th>
-                        <th scope="col">Player 2</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for = "game in formattedGames">
-                        <th scope="row">{{game.gameId}}</th>
-                        <td>{{game.date}}</td>
-                        <td>
-                            <span v-if="game.gamePlayers[0]">
-                                {{game.gamePlayers[0].player.email}}
-                            </span>
-                        </td>
-                        <td>
-                            <span v-if="game.gamePlayers[1]">
-                                {{game.gamePlayers[1].player.email}}
-                            </span>
-                            <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
-                                <button @click="joinGame(game.gameId)">Join</button>
-                            </span>
-                        </td>
-                        <td>
-                            <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers" >
-                                <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id">Resume</a>
-                            </span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div id="leaderBoard">
-            <h2> LeaderBoard</h2>
-            <table class="table table-borderless">
-                <thead>
-                    <tr>
-                        <th scope="col">Player Id</th>
-                        <th scope="col">Player</th>
-                        <th scope="col">Total</th>
-                        <th scope="col">Wins</th>
-                        <th scope="col">Losses</th>
-                        <th scope="col">Ties</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for = "player in leaderBoard">
-                        <th>{{player.player_id}}</th>
-                        <td>{{player.player_email}}</td>
-                        <td>{{player.total}}</td>
-                        <td>{{player.wins}}</td>
-                        <td>{{player.losses}}</td>
-                        <td>{{player.ties}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div v-if="isLoggedIn">
-            <button @click="createNewGame">Create Game</button>
+            <!--Table Games-->
+            <div id="games">
+                <h2 class="text-center" >Games</h2>
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">Game ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Player 1</th>
+                            <th scope="col">Player 2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for = "game in formattedGames">
+                            <th scope="row">{{game.gameId}}</th>
+                            <td>{{game.date}}</td>
+                            <td>
+                                <span v-if="game.gamePlayers[0]">
+                                    {{game.gamePlayers[0].player.email}}
+                                </span>
+                            </td>
+                            <td>
+                                <span v-if="game.gamePlayers[1]">
+                                    {{game.gamePlayers[1].player.email}}
+                                </span>
+                                <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
+                                    <button @click="joinGame(game.gameId)">Join</button>
+                                </span>
+                            </td>
+                            <td>
+                                <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers" >
+                                    <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id">Resume</a>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--Table LeaderBoard-->
+            <div id="leaderBoard">
+                <h2 class="text-center"> LeaderBoard</h2>
+                <table class="table table-borderless">
+                    <thead>
+                        <tr>
+                            <th scope="col">Player</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Wins</th>
+                            <th scope="col">Losses</th>
+                            <th scope="col">Ties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for = "player in leaderBoard">
+                            <td>{{player.player_email}}</td>
+                            <td>{{player.total}}</td>
+                            <td>{{player.wins}}</td>
+                            <td>{{player.losses}}</td>
+                            <td>{{player.ties}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-if="isLoggedIn">
+                <button @click="createNewGame">Create Game</button>
+            </div>
         </div>
     </div>
 
