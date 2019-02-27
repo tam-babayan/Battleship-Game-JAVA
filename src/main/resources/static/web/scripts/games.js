@@ -1,4 +1,4 @@
-new Vue ({
+new Vue({
   el: '#app',
 
   data: {
@@ -27,29 +27,29 @@ new Vue ({
   methods: {
     getGameInfo() {
       axios
-        .get("/api/games")
-        .then(response => {
-          this.games = response.data.games;
-          console.log(this.games)
-          this.currentPlayer = response.data.player;
-        })
-        .finally(() => {
-          if (this.currentPlayer != null) {
-            this.isLoggedIn = true;
-          }
-        })
-        .catch(error => console.log(error));
+          .get("/api/games")
+          .then(response => {
+            this.games = response.data.games;
+            console.log(this.games)
+            this.currentPlayer = response.data.player;
+          })
+          .catch(error => console.log(error))
+          .finally(() => {
+            if (this.currentPlayer != null) {
+              this.isLoggedIn = true;
+            }
+          })
 
     },
 
     getLeaderBoardInfo() {
       axios
-        .get("/api/games/scores")
-        .then(response => {
-          this.leaderBoard = response.data;
-          this.leaderBoard.sort((a, b) => (a.total < b.total ? 1 : -1));
-        })
-        .catch(error => console.log(error));
+          .get("/api/games/scores")
+          .then(response => {
+            this.leaderBoard = response.data;
+            this.leaderBoard.sort((a, b) => (a.total < b.total ? 1 : -1));
+          })
+          .catch(error => console.log(error));
     },
 
     handleFormSubmit(event) {
@@ -139,44 +139,44 @@ new Vue ({
     },
 
     createNewGame() {
-        fetch('/api/games', {
-            credentials: "include",
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-        })
-        .then(response => {
-          if (response.ok) {
+      fetch('/api/games', {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
+          .then(response => {
+            if (response.ok) {
               return response.json();
-          }
-        })
-        .then (response => {
+            }
+          })
+          .then(response => {
             console.log(response);
             window.location.replace("http://localhost:8080/web/game.html?gp=" + response.gpid);
-        })
-   },
+          })
+    },
 
-   joinGame(id) {
-    fetch('/api/game/' + id + '/players', {
-      credentials: "include",
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    })
-    .then(response => {
-      if (response.ok) {
-          return response.json();
-      }
-    })
-    .then(data => {
+    joinGame(id) {
+      fetch('/api/game/' + id + '/players', {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            }
+          })
+          .then(data => {
 //        console.log(data)
-        window.location.replace("http://localhost:8080/web/game.html?gp=" + data.gpid)
-    })
-    .catch (error => console.log(error))
+            window.location.replace("http://localhost:8080/web/game.html?gp=" + data.gpid)
+          })
+          .catch(error => console.log(error))
     }
   }
 })

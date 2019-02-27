@@ -1,25 +1,54 @@
 body, h1 {
     text-align: center;
 }
+
+footer {
+    height: 50px;
+    background-color: #333A41;
+}
+
+nav {
+    background-color: rgba(51, 51, 51, 0.3);
+}
+
+[v-cloak] {
+    display: none;
+}
+
+#bg {
+    background-image: url("img/game_background.jpg");
+
+    height: 100vh;
+
+    background-position: center;
+    background-size: cover;
+}
+
 .ship_cell {
     background: blue;
 }
+
 .opponentSalvo_cell {
     background: lightseagreen;
 }
+
 .mySalvos_cell {
     background: #86ffa3;
 }
+
 .cell {
     width: 50px;
     height: 50px;
 }
+
 .cell_yellow {
     background-color: yellow;
 }
+
 .cell_pink {
     background-color: pink;
 }
+
 .shipsToPlace {
     width: 50px;
     height: 50px;
@@ -39,7 +68,7 @@ body, h1 {
 }
 
 #counter {
-background-color: #ffccfc;
+    background-color: #16447A;
 }
 
 .salvoInprocess_cell {
@@ -47,7 +76,9 @@ background-color: #ffccfc;
 }
 
 .opponentHitShip_cell {
-    background: #1b8622;
+    background-color: #16447A;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/57/Explosion-155624_icon.svg');
+    background-size: cover;
 }
 
 .opponentSunkShips_cell {

@@ -18,36 +18,67 @@
     <title>Games</title>
 </head>
 <body>
-    <div class="bg1">
-        <!--SmoothScroll-->
-        <ul class="smooth-scroll list-unstyled">
-            <li class="image-button">
-                <div class="hovereffect">
-                    <a class="info" href="#leaderBoard">
-                        <img class="img-fluid p-3" src="styles/img/Leaderboard.png" width="110px" height="110px" alt="">
-                        <span class="text-content text-warning h5">LeaderBoard</span>
+<div id="app" v-cloak>
+    <div class="container-fluid p-0">
+        <div class="bg1">
+            <!--SmoothScroll-->
+            <ul class="smooth-scroll list-unstyled">
+                <li class="image-button">
+                    <div class="hovereffect">
+                        <a class="info" href="#leaderBoard">
+                            <img class="img-fluid p-3" src="styles/img/Leaderboard.png" width="110px" height="110px" alt="">
+                            <span class="text-content text-warning h5">LeaderBoard</span>
+                        </a>
+                    </div>
+                </li>
+                <br>
+                <li class="image-button">
+                    <div class="hovereffect">
+                        <a class="info" href="#games">
+                            <img class="img-fluid p-3" src="styles/img/games.png" width="110px" height="110px" alt="">
+                            <span class="text-content text-warning h5 ml-3">Games</span>
+                        </a>
+                    </div>
+                </li>
+                <br>
+                <div class="image-button hovereffect mb-3" v-if="isLoggedIn">
+                    <a @click="createNewGame">
+                        <img class="img-fluid p-3" src="styles/img/start.png" width="110px" height="110px" alt="">
+                        <span class="text-content text-warning h5 ml-1">Start New Game</span>
                     </a>
                 </div>
-            </li>
-            <br>
-            <li class="image-button">
-                <div class="hovereffect">
-                    <a class="info" href="#games">
-                        <img class="img-fluid p-3" src="styles/img/games.png" width="110px" height="110px" alt="">
-                        <span class="text-content text-warning h5 ml-3">Games</span>
-                    </a>
+            </ul>
+        </div>
+
+        <!--navbar-->
+        <nav class="navbar fixed-top navbar-expand-lg row justify-content-between">
+            <div class="d-flex col-3 text-warning ml-4 h2">
+                <i class="fas fa-ship"></i>
+            </div>
+            <div class="col-3 align-items-end">
+                <div v-if="isLoggedIn == false" class="d-flex justify-content-end mr-5">
+                    <button type="button" class="btn btn-outline-warning" data-toggle="modal"
+                            data-target="#exampleModalCenter">
+                        Log In
+                    </button>
                 </div>
-            </li>
-        </ul>
-    </div>
-    <div id="app" class="container-fluid">
+                <div v-if="isLoggedIn == true" class="d-flex justify-content-end mr-5">
+                            <span class="text-warning mr-4 mt-1">
+                                {{currentPlayer.email}}
+                            </span>
+                    <button type="submit" class="btn btn-outline-warning" @click="logOut()">Logout</button>
+                </div>
+            </div>
+        </nav>
         <div class="bg2">
             <!-- Modal -->
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-warning" id="exampleModalCenterTitle">Log in to Battleship Game</h5>
+                            <h5 class="modal-title text-warning" id="exampleModalCenterTitle">Log in to Battleship
+                                Game</h5>
                             <div v-if="isLoggedIn == false">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -60,14 +91,21 @@
                                     <form id="logInForm" @click.prevent="handleFormSubmit">
                                         <div class="form-group">
                                             <label for="name" class="text-secondary">Username</label>
-                                            <input v-model="username" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="name" required>
+                                            <input v-model="username" type="email" class="form-control"
+                                                   aria-describedby="emailHelp" placeholder="Enter email" name="name"
+                                                   required>
                                         </div>
                                         <div class="form-group">
                                             <label for="pwd" class="text-secondary">Password</label>
-                                            <input v-model="password" type="password" class="form-control" placeholder="Password" name="pwd" required>
+                                            <input v-model="password" type="password" class="form-control"
+                                                   placeholder="Password" name="pwd" required>
                                         </div>
-                                        <button type="submit" class="btn btn-warning" name="login" data-dismiss="modal">Login</button>
-                                        <button type="submit" class="btn btn-warning" name="signup" data-dismiss="modal">Create an account</button>
+                                        <button type="submit" class="btn btn-warning" name="login" data-dismiss="modal">
+                                            Login
+                                        </button>
+                                        <button type="submit" class="btn btn-warning" name="signup"
+                                                data-dismiss="modal">Create an account
+                                        </button>
                                     </form>
                                 </div>
                                 <div v-if="isLoggedIn">
@@ -85,63 +123,46 @@
                 </div>
             </div>
 
-            <!--navbar-->
-            <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark row justify-content-between">
-                <div class="col-3 text-warning ml-4 h2">
-                    <i class="fas fa-ship"></i>
-                </div>
-                <div class="col-3 align-items-end">
-                    <div v-if="isLoggedIn == false" class="d-flex justify-content-end mr-5">
-                        <button type="button" class="btn btn-outline-warning" data-toggle="modal" data-target="#exampleModalCenter">
-                            Log In
-                        </button>
-                    </div>
-                    <div v-if="isLoggedIn == true" class="d-flex justify-content-end mr-5">
-                        <span class="text-warning mr-4 mt-1">
-                            {{currentPlayer.email}}
-                        </span>
-                        <button type="submit" class="btn btn-outline-warning" @click="logOut()">Logout</button>
-                    </div>
-                </div>
-            </nav>
-
             <!--Table Games-->
             <div id="games" class="container table-responsive">
                 <div class="d-flex row justify-content-center">
                     <h1 class="text-center interesting-color m-3">Games</h1>
                     <table class="table">
                         <thead class="text-warning">
-                            <tr>
-                                <th scope="col">Game ID</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Player 1</th>
-                                <th scope="col">Player 2</th>
-                                <th scope="col"></th>
-                            </tr>
+                        <tr>
+                            <th scope="col">Game ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Player 1</th>
+                            <th scope="col">Player 2</th>
+                            <th scope="col"></th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr v-for = "game in formattedGames">
-                                <th scope="row">{{game.gameId}}</th>
-                                <td>{{game.date}}</td>
-                                <td>
-                                    <span v-if="game.gamePlayers[0]">
-                                        {{game.gamePlayers[0].player.email}}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span v-if="game.gamePlayers[1]">
-                                        {{game.gamePlayers[1].player.email}}
-                                    </span>
-                                    <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
-                                        <a class="text-warning" @click="joinGame(game.gameId)">Join Game</a>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
-                                        <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id" class="text-warning">Resume</a>
-                                    </span>
-                                </td>
-                            </tr>
+                        <tr v-for="game in formattedGames">
+                            <th scope="row">{{game.gameId}}</th>
+                            <td>{{game.date}}</td>
+                            <td>
+                                        <span v-if="game.gamePlayers[0]">
+                                            {{game.gamePlayers[0].player.email}}
+                                        </span>
+                            </td>
+                            <td>
+                                        <span v-if="game.gamePlayers[1]">
+                                            {{game.gamePlayers[1].player.email}}
+                                        </span>
+                                <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id"
+                                      v-for="gamePlayer in game.gamePlayers">
+                                            <a class="text-warning" @click="joinGame(game.gameId)">Join Game</a>
+                                        </span>
+                            </td>
+                            <td>
+                                        <span v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id"
+                                              v-for="gamePlayer in game.gamePlayers">
+                                            <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id"
+                                               class="text-warning">Resume</a>
+                                        </span>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="image-button hovereffect mb-3" v-if="isLoggedIn">
@@ -159,47 +180,48 @@
                 <h1 class="text-center interesting-color m-3"> LeaderBoard</h1>
                 <table class="table mb-5">
                     <thead class="text-warning">
-                        <tr>
-                            <th scope="col">Player</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Wins</th>
-                            <th scope="col">Losses</th>
-                            <th scope="col">Ties</th>
-                        </tr>
+                    <tr>
+                        <th scope="col">Player</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Wins</th>
+                        <th scope="col">Losses</th>
+                        <th scope="col">Ties</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr v-for = "player in leaderBoard">
-                            <td>{{player.player_email}}</td>
-                            <td>{{player.total}}</td>
-                            <td>{{player.wins}}</td>
-                            <td>{{player.losses}}</td>
-                            <td>{{player.ties}}</td>
-                        </tr>
+                    <tr v-for="player in leaderBoard">
+                        <td>{{player.player_email}}</td>
+                        <td>{{player.total}}</td>
+                        <td>{{player.wins}}</td>
+                        <td>{{player.losses}}</td>
+                        <td>{{player.ties}}</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <footer></footer>
-    <!-- Vue.js-->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</div>
+<footer></footer>
+<!-- Vue.js-->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-    <!--Bootstrap 4-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://momentjs.com/downloads/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+<!--Bootstrap 4-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
-    <!--Optional JavaScript-->
-    <script type="text/javascript" src="scripts/games.js"></script>
+<!--Optional JavaScript-->
+<script type="text/javascript" src="scripts/games.js"></script>
 </body>
 </html>
 

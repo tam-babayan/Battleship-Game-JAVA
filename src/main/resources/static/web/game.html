@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!--Fontawesome Stylesheet-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+          crossorigin="anonymous">
+
     <!-- Bootstrap Stylesheet -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -15,128 +20,142 @@
 </head>
 
 <body>
+<div id="app" v-cloak>
+    <div class="container-fluid p-0">
+        <div id="bg">
+            <span v-if="gameInfo.length != 0" class="text-warning">
 
-<div class="container d-flex flex-column align-self-center" id="app">
-    <span v-if="gameInfo.length != 0">
-        <h1>Game</h1>
-        <div>
-            <form id="logOutForm" onsubmit="return false">
-                <button type="submit" @click="logOut()">Logout</button>
-            </form>
+                <!--navbar-->
+                <nav class="navbar fixed-top navbar-expand-lg row justify-content-between">
+                    <div class="d-flex col-3 text-warning h2 ml-4">
+                        <i class="fas fa-ship"></i>
+                    </div>
+                    <div v-for="gamePlayer in this.gamePlayers">
+                    {{gamePlayer.player.email}}
+                    <span v-if="gamePlayer.player.id === playerId">(you)</span>
+                </div>
+                    <div class="d-flex col-3 justify-content-end mr-5">
+                        <button onclick="window.open('/web/games.html')" class="btn btn-outline-warning">Back</button>
+                        <form onsubmit="return false">
+                            <button class="btn btn-outline-warning ml-4" type="submit" @click="logOut()">Logout</button>
+                        </form>
+                    </div>
+                </nav>
+                <br><br>
+                <!--<div v-for="gamePlayer in this.gamePlayers">-->
+                    <!--{{gamePlayer.player.email}}-->
+                    <!--<span v-if="gamePlayer.player.id === playerId">(you)</span>-->
+                <!--</div>-->
+                <div class="d-lg-flex">
+                    <div class="col-sm-12 col-md-12 col-lg-5">
+                        <table class="table table-bordered" id="firstTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="row in board">
+                                    <th scope="row">{{row.rowId}}</th>
+                                    <td class="cell" v-for="td in row.column"
+                                        v-bind:class="{ship_cell: td.ship, opponentSalvo_cell: td.opponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
+                                        @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
+                                        @click="addShip">
+                                        <span v-if="td.opponentSalvoTurn">{{td.opponentSalvoTurn}}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-5">
+                        <div id="counter">{{salvoCounter}} shot</div>
+                        <button @click="addSalvo">Fire</button>
+                        <table class="table table-bordered" id="secondTable">
+                            <thead>
+                            <tr>
+                                <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="row in board">
+                                <th scope="row">{{row.rowId}}</th>
+                                <td v-for="td in row.column" class="cell"
+                                    v-bind:class="{mySalvos_cell: td.mySalvos, salvoInprocess_cell: td.salvoInProcessCell,
+                                    opponentHitShip_cell :td.opponentShip, opponentSunkShips_cell : td.opponentSunkShips}"
+                                    @click="setSalvoInProcess(row.rowId, td.columnId)"
+                                >
+                                    <span v-if="td.mySalvoTurn">{{td.mySalvoTurn}}</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-3">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Ships</th>
+                                    <th>
+                                        <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip"> rotate
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="shipType in shipTypes">
+                                <td> {{shipType.name}}</td>
+                                <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
+                                    @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
+                                    v-for="cell in shipType.length">
+                                </td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <hr/>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Ship
+                                    </th>
+                                    <th>
+                                        Left
+                                    </th>
+                                    <th>
+                                        Sunk
+                                    </th>
+                                    <th>
+                                        Turn
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="hitShip in hitShips">
+                                    <td>
+                                        {{hitShip.ship}}
+                                    </td>
+                                    <td>
+                                        {{hitShip.left}}
+                                    </td>
+                                    <td v-if="hitShip.sunk != 0">
+                                        {{hitShip.sunk}}
+                                    </td>
+                                    <td>
+                                        {{hitShip.turn}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </span>
         </div>
-            <button onclick="window.open('/web/games.html')">Back</button>
-        <div v-for="gamePlayer in this.gameInfo.gamePlayers">
-            {{gamePlayer.player.email}}
-            <span v-if="gamePlayer.player.id === playerId">(you)</span>
-        </div>
-        <div class="d-lg-flex">
-            <div class="col-sm-12 col-md-12 col-lg-5">
-                <table class="table table-bordered" id="firstTable">
-                    <thead>
-                        <tr>
-                            <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="row in board">
-                            <th scope="row">{{row.rowId}}</th>
-                            <td class="cell" v-for="td in row.column"
-                                v-bind:class="{ship_cell: td.ship, opponentSalvo_cell: td.opponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
-                                @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
-                                @click="addShip">
-                                <span v-if="td.opponentSalvoTurn">{{td.opponentSalvoTurn}}</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-5">
-                <div id="counter">{{salvoCounter}} shot</div>
-                <button @click="addSalvo">Fire</button>
-                <table class="table table-bordered" id="secondTable">
-                    <thead>
-                    <tr>
-                        <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="row in board">
-                        <th scope="row">{{row.rowId}}</th>
-                        <td v-for="td in row.column" class="cell"
-                            v-bind:class="{mySalvos_cell: td.mySalvos, salvoInprocess_cell: td.salvoInProcessCell,
-                            opponentHitShip_cell :td.opponentShip, opponentSunkShips_cell : td.opponentSunkShips}"
-                            @click="setSalvoInProcess(row.rowId, td.columnId)"
-                        >
-                            <span v-if="td.mySalvoTurn">{{td.mySalvoTurn}}</span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-3">
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="col"> Ships</th>
-                            <th>
-                                <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip"> rotate
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="shipType in shipTypes">
-                        <td> {{shipType.name}}</td>
-                        <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
-                            @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
-                            v-for="cell in shipType.length">
-                        </td>
-                        <td></td>
-                    </tr>
-                    </tbody>
-                </table>
-                <hr/>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Ship
-                            </th>
-                            <th>
-                                Left
-                            </th>
-                            <th>
-                                Sunk
-                            </th>
-                            <th>
-                                Turn
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="hitShip in hitShips">
-                            <td>
-                                {{hitShip.ship}}
-                            </td>
-                            <td>
-                                {{hitShip.left}}
-                            </td>
-                            <td v-if="hitShip.sunk != 0">
-                                {{hitShip.sunk}}
-                            </td>
-                            <td>
-                                {{hitShip.turn}}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </span>
-    <span v-else>
-        {{errorMessage}}
-    </span>
+        <span v-else>
+            {{errorMessage}}
+        </span>
+    </div>
 </div>
-
+<footer></footer>
 <!-- Vue.js-->
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
@@ -147,11 +166,14 @@
         crossorigin="anonymous"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 <!--Optional JavaScript-->
 <script type="text/javascript" src="scripts/game.js"></script>
