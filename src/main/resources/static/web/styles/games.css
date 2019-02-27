@@ -45,6 +45,16 @@ body, html {
     background-size: cover;
 }
 
+.bg3 {
+    background-image: url("img/bg3.jpg");
+
+    height: 100%;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .modal-content {
     background-color: rgb(51,51,51);
 }
@@ -64,15 +74,44 @@ body, html {
     text-decoration: none;
 }
 
-li {
+.bg1 .image-button {
     border: 2px solid #F2B736;
     border-radius: 20px 20px;
-    width: 350px;
-    background-color: rgba(51,51,51, 0.7);
+    width: 300px;
+    background-color: rgba(51,51,51, 0.6);
+}
+
+.bg2 .image-button {
+    border: 2px solid #F2B736;
+    border-radius: 20px 20px;
+    width: 300px;
+    background-color: rgba(51,51,51, 0.6);
+}
+
+.bg2 .table-button {
+    border: 2px solid #F2B736;
+    border-radius: 20px 20px;
+    width: 200px;
+    background-color: rgba(51,51,51, 0.6);
 }
 
 .smooth-scroll {
     position: absolute;
     left: 10px;
     bottom: 25px
+}
+
+footer {
+    height: 50px;
+    background-color: #333A41;
+}
+
+.table {
+    background-color: rgba(51,51,51, 0.6);
+    color: white;
+    border-radius: 20px 20px;
+}
+
+.interesting-color {
+    color: #006376;
 }

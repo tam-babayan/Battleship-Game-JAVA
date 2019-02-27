@@ -21,27 +21,27 @@
     <div class="bg1">
         <!--SmoothScroll-->
         <ul class="smooth-scroll list-unstyled">
-            <li class="p-2">
-                <div class="hovereffect ml-4">
+            <li class="image-button">
+                <div class="hovereffect">
                     <a class="info" href="#leaderBoard">
-                        <img class="img-fluid" src="styles/img/Leaderboard.png" width="110px" height="110px" alt="">
-                        <span class="text-content text-white h5">See LeaderBoard</span>
+                        <img class="img-fluid p-3" src="styles/img/Leaderboard.png" width="110px" height="110px" alt="">
+                        <span class="text-content text-warning h5">LeaderBoard</span>
                     </a>
                 </div>
             </li>
             <br>
-            <li class="p-2">
-                <div class="hovereffect ml-4">
+            <li class="image-button">
+                <div class="hovereffect">
                     <a class="info" href="#games">
-                        <img class="img-fluid" src="styles/img/games.png" width="110px" height="110px" alt="">
-                        <span class="text-content text-white h5 ml-3">See Games</span>
+                        <img class="img-fluid p-3" src="styles/img/games.png" width="110px" height="110px" alt="">
+                        <span class="text-content text-warning h5 ml-3">Games</span>
                     </a>
                 </div>
             </li>
         </ul>
     </div>
-    <div class="bg2">
-        <div id="app" class="container">
+    <div id="app" class="container-fluid">
+        <div class="bg2">
             <!-- Modal -->
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -84,6 +84,8 @@
                     </div>
                 </div>
             </div>
+
+            <!--navbar-->
             <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark row justify-content-between">
                 <div class="col-3 text-warning ml-4 h2">
                     <i class="fas fa-ship"></i>
@@ -104,49 +106,59 @@
             </nav>
 
             <!--Table Games-->
-            <div id="games">
-                <h2 class="text-center" >Games</h2>
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th scope="col">Game ID</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Player 1</th>
-                            <th scope="col">Player 2</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for = "game in formattedGames">
-                            <th scope="row">{{game.gameId}}</th>
-                            <td>{{game.date}}</td>
-                            <td>
-                                <span v-if="game.gamePlayers[0]">
-                                    {{game.gamePlayers[0].player.email}}
-                                </span>
-                            </td>
-                            <td>
-                                <span v-if="game.gamePlayers[1]">
-                                    {{game.gamePlayers[1].player.email}}
-                                </span>
-                                <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
-                                    <button @click="joinGame(game.gameId)">Join</button>
-                                </span>
-                            </td>
-                            <td>
-                                <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers" >
-                                    <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id">Resume</a>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="games" class="container table-responsive">
+                <div class="d-flex row justify-content-center">
+                    <h1 class="text-center interesting-color m-3">Games</h1>
+                    <table class="table">
+                        <thead class="text-warning">
+                            <tr>
+                                <th scope="col">Game ID</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Player 1</th>
+                                <th scope="col">Player 2</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for = "game in formattedGames">
+                                <th scope="row">{{game.gameId}}</th>
+                                <td>{{game.date}}</td>
+                                <td>
+                                    <span v-if="game.gamePlayers[0]">
+                                        {{game.gamePlayers[0].player.email}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span v-if="game.gamePlayers[1]">
+                                        {{game.gamePlayers[1].player.email}}
+                                    </span>
+                                    <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
+                                        <a class="text-warning" @click="joinGame(game.gameId)">Join Game</a>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span  v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id" v-for="gamePlayer in game.gamePlayers">
+                                        <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id" class="text-warning">Resume</a>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="image-button hovereffect mb-3" v-if="isLoggedIn">
+                        <a @click="createNewGame">
+                            <img class="img-fluid p-3" src="styles/img/start.png" width="110px" height="110px" alt="">
+                            <span class="text-content text-warning h5 ml-1">Start New Game</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-
+        </div>
+        <div class="bg3">
             <!--Table LeaderBoard-->
-            <div id="leaderBoard">
-                <h2 class="text-center"> LeaderBoard</h2>
-                <table class="table table-borderless">
-                    <thead>
+            <div id="leaderBoard" class="container table-responsive">
+                <h1 class="text-center interesting-color m-3"> LeaderBoard</h1>
+                <table class="table mb-5">
+                    <thead class="text-warning">
                         <tr>
                             <th scope="col">Player</th>
                             <th scope="col">Total</th>
@@ -166,12 +178,9 @@
                     </tbody>
                 </table>
             </div>
-            <div v-if="isLoggedIn">
-                <button @click="createNewGame">Create Game</button>
-            </div>
         </div>
     </div>
-
+    <footer></footer>
     <!-- Vue.js-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
