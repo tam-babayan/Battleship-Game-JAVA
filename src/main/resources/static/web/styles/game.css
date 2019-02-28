@@ -8,7 +8,7 @@ footer {
 }
 
 nav {
-    background-color: rgba(51, 51, 51, 0.3);
+    background-color: rgba(51, 51, 51, 0.5);
 }
 
 [v-cloak] {
@@ -19,21 +19,32 @@ nav {
     background-image: url("img/game_background.jpg");
 
     height: 100vh;
-
     background-position: center;
     background-size: cover;
 }
 
+.table {
+    background-color: rgba(51, 51, 51, 0.2);
+    color: yellow;
+}
+
 .ship_cell {
-    background: blue;
+    background: #0097A6;
 }
 
 .opponentSalvo_cell {
-    background: lightseagreen;
+    background-color: #1B437C;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/57/Explosion-155624_icon.svg');
+    background-size: cover;
+    background-position: center;
 }
 
 .mySalvos_cell {
-    background: #86ffa3;
+    /*background: #6A9FE2;*/
+    background-color: #1B437C;
+    background-image: url('img/failed-shot-icon.png');
+    background-size: cover;
+    background-position: center;
 }
 
 .cell {
@@ -42,45 +53,52 @@ nav {
 }
 
 .cell_yellow {
-    background-color: yellow;
+    background-color: #F3C944;
 }
 
 .cell_pink {
-    background-color: pink;
+    background-color: #F77E61;
 }
 
 .shipsToPlace {
     width: 50px;
     height: 50px;
-    background: yellow;
+    background: #F3C944;
     border: 1px solid grey;
 }
 
 .shipsPlaced {
     width: 50px;
     height: 50px;
-    background: white;
+    background: #1B437C;
     border: 1px solid grey;
 }
 
 #secondTable td:hover {
-    background: grey;
+    background: #F3C944;
 }
 
 #counter {
-    background-color: #16447A;
+    background-color: #1B437C;
 }
 
 .salvoInprocess_cell {
-    background-color: orange;
+    background-color: #1B437C;
+    background-image: url('img/bomb-icon.png');
+    background-size: cover;
+    background-position: center;
 }
 
 .opponentHitShip_cell {
-    background-color: #16447A;
+    background-color: #1B437C;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/57/Explosion-155624_icon.svg');
     background-size: cover;
+    background-position: center;
 }
 
 .opponentSunkShips_cell {
-    background: grey;
+    background-color: #1B437C;
+    background-image: url('img/smoke-icon.png');
+    background-size: cover;
+    background-position: center;
 }

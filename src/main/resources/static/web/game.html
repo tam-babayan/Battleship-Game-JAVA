@@ -16,24 +16,19 @@
 
     <!--Optional Stylesheet-->
     <link rel="stylesheet" href="styles/game.css">
-    <title>game_view</title>
+    <title>Game</title>
 </head>
 
 <body>
 <div id="app" v-cloak>
     <div class="container-fluid p-0">
-        <div id="bg">
-            <span v-if="gameInfo.length != 0" class="text-warning">
-
+        <div v-if="gameInfo.length != 0" class="text-warning">
+            <div id="bg">
                 <!--navbar-->
-                <nav class="navbar fixed-top navbar-expand-lg row justify-content-between">
+                <nav class="navbar fixed-top row justify-content-between">
                     <div class="d-flex col-3 text-warning h2 ml-4">
                         <i class="fas fa-ship"></i>
                     </div>
-                    <div v-for="gamePlayer in this.gamePlayers">
-                    {{gamePlayer.player.email}}
-                    <span v-if="gamePlayer.player.id === playerId">(you)</span>
-                </div>
                     <div class="d-flex col-3 justify-content-end mr-5">
                         <button onclick="window.open('/web/games.html')" class="btn btn-outline-warning">Back</button>
                         <form onsubmit="return false">
@@ -41,36 +36,36 @@
                         </form>
                     </div>
                 </nav>
-                <br><br>
-                <!--<div v-for="gamePlayer in this.gamePlayers">-->
-                    <!--{{gamePlayer.player.email}}-->
-                    <!--<span v-if="gamePlayer.player.id === playerId">(you)</span>-->
-                <!--</div>-->
-                <div class="d-lg-flex">
-                    <div class="col-sm-12 col-md-12 col-lg-5">
-                        <table class="table table-bordered" id="firstTable">
+                <br><br><br>
+                <div class="d-flex row">
+                    <div class="col-4" v-for="gamePlayer in this.gamePlayers">
+                        <span class="d-flex justify-content-center h5">{{gamePlayer.player.email}}</span>
+                    </div>
+                </div>
+                <div class="d-flex row-12">
+                    <div class="col-5 table-responsive">
+                        <table class="table table-bordered text-warning" id="firstTable">
                             <thead>
-                                <tr>
-                                    <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
-                                </tr>
+                            <tr>
+                                <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="row in board">
-                                    <th scope="row">{{row.rowId}}</th>
-                                    <td class="cell" v-for="td in row.column"
-                                        v-bind:class="{ship_cell: td.ship, opponentSalvo_cell: td.opponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
-                                        @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
-                                        @click="addShip">
-                                        <span v-if="td.opponentSalvoTurn">{{td.opponentSalvoTurn}}</span>
-                                    </td>
-                                </tr>
+                            <tr v-for="row in board">
+                                <th scope="row">{{row.rowId}}</th>
+                                <td class="cell" v-for="td in row.column"
+                                    v-bind:class="{ship_cell: td.ship, opponentSalvo_cell: td.opponentSalvos, cell_yellow:td.hoveredCell, cell_pink:td.overlapCell}"
+                                    @mouseover="updatePossibleShipPosition(row.rowId, td.columnId)"
+                                    @click="addShip">
+                                    <span v-if="td.opponentSalvoTurn">{{td.opponentSalvoTurn}}</span>
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-5">
-                        <div id="counter">{{salvoCounter}} shot</div>
-                        <button @click="addSalvo">Fire</button>
-                        <table class="table table-bordered" id="secondTable">
+
+                    <div class="col-5 table-responsive">
+                        <table class="table table-bordered text-warning" id="secondTable">
                             <thead>
                             <tr>
                                 <th scope="col" v-for="column in columns" class="cell">{{column}}</th>
@@ -90,69 +85,62 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-sm-12 col-md-12 col-lg-3">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th scope="col"> Ships</th>
-                                    <th>
-                                        <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip"> rotate
-                                    </th>
+
+                    <div class="col-2">
+                        <span class="table-responsive">
+                            <h4 scope="col"> Ships</h4>
+                            <div class="row justify-content-center mb-2">
+                                <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip" class="mr-3">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="shipType in shipTypes">
+                                    <td> {{shipType.name}}</td>
+                                    <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
+                                        @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
+                                        v-for="cell in shipType.length">
+                                    </td>
+                                    <td></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="shipType in shipTypes">
-                                <td> {{shipType.name}}</td>
-                                <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
-                                    @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
-                                    v-for="cell in shipType.length">
-                                </td>
-                                <td></td>
+                                </tbody>
+                            </table>
+                            <hr/>
+                        </span>
+                        <span>
+                            <div id="counter">{{salvoCounter}} shots left</div>
+                            <button @click="addSalvo" class="btn btn-outline-danger">Fire</button>
+                        </span>
+
+                        <table class="table-responsive">
+                            <thead>
+                            <tr>
+                                <th>Ship</th>
+                                <th>Left</th>
+                                <th>Sunk</th>
+                                <th>Turn</th>
                             </tr>
-                            </tbody>
-                        </table>
-                        <hr/>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Ship
-                                    </th>
-                                    <th>
-                                        Left
-                                    </th>
-                                    <th>
-                                        Sunk
-                                    </th>
-                                    <th>
-                                        Turn
-                                    </th>
-                                </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="hitShip in hitShips">
-                                    <td>
-                                        {{hitShip.ship}}
-                                    </td>
-                                    <td>
-                                        {{hitShip.left}}
-                                    </td>
-                                    <td v-if="hitShip.sunk != 0">
-                                        {{hitShip.sunk}}
-                                    </td>
-                                    <td>
-                                        {{hitShip.turn}}
-                                    </td>
-                                </tr>
+                            <tr v-for="hitShip in hitShips">
+                                <td>{{hitShip.ship}}</td>
+                                <td>{{hitShip.left}}</td>
+                                <td v-if="hitShip.sunk != 0">{{hitShip.sunk}}</td>
+                                <td>{{hitShip.turn}}</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </span>
+            </div>
         </div>
-        <span v-else>
+        <div v-else>
             {{errorMessage}}
-        </span>
+        </div>
     </div>
 </div>
 <footer></footer>

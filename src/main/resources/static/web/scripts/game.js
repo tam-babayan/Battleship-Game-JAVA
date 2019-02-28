@@ -114,7 +114,7 @@ new Vue({
           .get("/api/game_view/" + this.gamePlayerId)
           .then(response => {
             this.gameInfo = response.data;
-            this.gamePlayers = this.gameInfo.gamePlayers.sort((a, b)  => a.player.id - b.player.id);
+            this.gamePlayers = this.sortGamePlayers(this.gameInfo.gamePlayers, this.gamePlayerId);
             this.ships = this.gameInfo.ships;
             this.salvos = this.gameInfo.salvos;
             this.opponentShips = this.gameInfo.opponentShips;
@@ -126,6 +126,19 @@ new Vue({
           .catch(error => {
             this.errorMessage = error.response.data.error;
           })
+    },
+
+    sortGamePlayers (unsortedGamePlayers, playerID) {
+      let sortedGamePlayers = []
+      unsortedGamePlayers.forEach(gamePlayer => {
+        if (gamePlayer.id == playerID) {
+          sortedGamePlayers[0] = gamePlayer
+        }
+        else {
+          sortedGamePlayers[1] = gamePlayer
+        }
+      });
+      return sortedGamePlayers;
     },
 
     isShipCells(coordinate) {
