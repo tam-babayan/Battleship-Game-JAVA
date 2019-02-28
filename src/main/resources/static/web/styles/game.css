@@ -8,7 +8,7 @@ footer {
 }
 
 nav {
-    background-color: rgba(51, 51, 51, 0.5);
+    background-color: rgba(51, 51, 51, 0.7);
 }
 
 [v-cloak] {
@@ -16,7 +16,7 @@ nav {
 }
 
 #bg {
-    background-image: url("img/game_background.jpg");
+    background-image: url("img/bg2.jpg");
 
     height: 100vh;
     background-position: center;
@@ -24,24 +24,25 @@ nav {
 }
 
 .table {
-    background-color: rgba(51, 51, 51, 0.2);
-    color: yellow;
+    background-color: rgba(51, 51, 51, 0.6);
+    border-radius: 20px 20px;
+}
+
+.table td {
+    padding: 1px;
 }
 
 .ship_cell {
-    background: #0097A6;
+    background-color: rgba(51, 51, 51, 0.9);
 }
 
 .opponentSalvo_cell {
-    background-color: #1B437C;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/57/Explosion-155624_icon.svg');
     background-size: cover;
     background-position: center;
 }
 
 .mySalvos_cell {
-    /*background: #6A9FE2;*/
-    background-color: #1B437C;
     background-image: url('img/failed-shot-icon.png');
     background-size: cover;
     background-position: center;
@@ -63,14 +64,14 @@ nav {
 .shipsToPlace {
     width: 50px;
     height: 50px;
-    background: #F3C944;
+    background: #005B6B;
     border: 1px solid grey;
 }
 
 .shipsPlaced {
     width: 50px;
     height: 50px;
-    background: #1B437C;
+    /*background: #1B437C;*/
     border: 1px solid grey;
 }
 
@@ -78,27 +79,24 @@ nav {
     background: #F3C944;
 }
 
-#counter {
-    background-color: #1B437C;
-}
-
 .salvoInprocess_cell {
-    background-color: #1B437C;
     background-image: url('img/bomb-icon.png');
     background-size: cover;
     background-position: center;
 }
 
 .opponentHitShip_cell {
-    background-color: #1B437C;
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/5/57/Explosion-155624_icon.svg');
     background-size: cover;
     background-position: center;
 }
 
 .opponentSunkShips_cell {
-    background-color: #1B437C;
     background-image: url('img/smoke-icon.png');
     background-size: cover;
     background-position: center;
+}
+
+.interesting-color {
+    color: #006376;
 }

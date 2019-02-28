@@ -22,7 +22,7 @@
 <body>
 <div id="app" v-cloak>
     <div class="container-fluid p-0">
-        <div v-if="gameInfo.length != 0" class="text-warning">
+        <div v-if="gameInfo.length != 0" class="interesting-color">
             <div id="bg">
                 <!--navbar-->
                 <nav class="navbar fixed-top row justify-content-between">
@@ -37,9 +37,9 @@
                     </div>
                 </nav>
                 <br><br><br>
-                <div class="d-flex row">
-                    <div class="col-4" v-for="gamePlayer in this.gamePlayers">
-                        <span class="d-flex justify-content-center h5">{{gamePlayer.player.email}}</span>
+                <div class="d-flex row-12">
+                    <div class="col-5" v-for="gamePlayer in this.gamePlayers">
+                        <span class="d-flex h5">{{gamePlayer.player.email}}</span>
                     </div>
                 </div>
                 <div class="d-flex row-12">
@@ -86,9 +86,9 @@
                         </table>
                     </div>
 
-                    <div class="col-2">
-                        <span class="table-responsive">
-                            <h4 scope="col"> Ships</h4>
+                    <div>
+                        <div class="table-responsive">
+                            <h5 scope="col"> Ships</h5>
                             <div class="row justify-content-center mb-2">
                                 <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip" class="mr-3">
                                 <i class="fas fa-sync-alt"></i>
@@ -110,31 +110,31 @@
                                 </tbody>
                             </table>
                             <hr/>
-                        </span>
-                        <span>
-                            <div id="counter">{{salvoCounter}} shots left</div>
-                            <button @click="addSalvo" class="btn btn-outline-danger">Fire</button>
-                        </span>
-
-                        <table class="table-responsive">
-                            <thead>
-                            <tr>
-                                <th>Ship</th>
-                                <th>Left</th>
-                                <th>Sunk</th>
-                                <th>Turn</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr v-for="hitShip in hitShips">
-                                <td>{{hitShip.ship}}</td>
-                                <td>{{hitShip.left}}</td>
-                                <td v-if="hitShip.sunk != 0">{{hitShip.sunk}}</td>
-                                <td>{{hitShip.turn}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        </div>
+                        <div class="table-responsive text-warning">
+                            <table class="table table-bordered ">
+                                <thead>
+                                <tr>
+                                    <th>Ship</th>
+                                    <th>Left</th>
+                                    <th>Sunk</th>
+                                    <th>Turn</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="hitShip in hitShips">
+                                    <td>{{hitShip.ship}}</td>
+                                    <td>{{hitShip.left}}</td>
+                                    <td v-if="hitShip.sunk != 0">{{hitShip.sunk}}</td>
+                                    <td>{{hitShip.turn}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
+                </div>
+                <div>
+                    <button @click="addSalvo" class="btn btn-danger">Fire ({{salvoCounter}})</button>
                 </div>
             </div>
         </div>
