@@ -76,7 +76,7 @@ new Vue({
           left = left - this.hits[ship.type].locations.length
         }
         if (left === 0) {
-          hitShips.push({ship: ship.type, left: left, sunk: "SUNK", turn: this.hits[ship.type].turn});
+          hitShips.push({ship: ship.type, left: left, sunk: "X", turn: this.hits[ship.type].turn});
         } else {
           hitShips.push({ship: ship.type, left: left});
         }
@@ -84,9 +84,17 @@ new Vue({
       hitShips.sort((a, b) => (a.ship > b.ship) ? 1 : ((b.ship > a.ship) ? -1 : 0));
 
       return hitShips
+    },
+
+    areAllShipsPlaced() {
+      let areAllShipsPlaced = false;
+      let arr = this.shipTypes.filter(ship => ship.isPlaced === false);
+      if (arr.length === 0) {
+        areAllShipsPlaced = true;
+      }
+      return areAllShipsPlaced
     }
   },
-
   methods: {
 
     // get the gamePlayerId from url

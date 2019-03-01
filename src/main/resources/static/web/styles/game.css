@@ -15,7 +15,7 @@ nav {
     display: none;
 }
 
-#bg {
+#bg1 {
     background-image: url("img/bg2.jpg");
 
     height: 100vh;
@@ -23,17 +23,51 @@ nav {
     background-size: cover;
 }
 
+#bg2 {
+    background-image: url("img/game-bg2.jpg");
+
+    height: 100vh;
+    background-position: center;
+    background-size: cover;
+}
+
+.ship1 {
+    background-image: url("img/carrear.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.ship2 {
+    background-image: url("img/battleship.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.ship3 {
+    background-image: url("img/submarine.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.ship4 {
+    background-image: url("img/destroyer.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.ship5 {
+    background-image: url("img/patrol-boat.png");
+    background-size: cover;
+    background-position: center;
+}
+
 .table {
-    background-color: rgba(51, 51, 51, 0.6);
+    background-color: rgba(51, 51, 51, 0.7);
     border-radius: 20px 20px;
 }
 
-.table td {
-    padding: 1px;
-}
-
 .ship_cell {
-    background-color: rgba(51, 51, 51, 0.9);
+    background-color: rgba(255, 195, 0, 0.6);
 }
 
 .opponentSalvo_cell {
@@ -92,6 +126,7 @@ nav {
 }
 
 .opponentSunkShips_cell {
+    background-color: rgba(236, 8, 2, 0.4);
     background-image: url('img/smoke-icon.png');
     background-size: cover;
     background-position: center;
@@ -99,4 +134,12 @@ nav {
 
 .interesting-color {
     color: #006376;
+}
+
+.sunkship_img_bg {
+    background-color: rgba(236, 8, 2, 0.4);
+}
+
+.btn-lg {
+    border-radius: 80px;
 }

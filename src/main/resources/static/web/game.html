@@ -21,9 +21,9 @@
 
 <body>
 <div id="app" v-cloak>
-    <div class="container-fluid p-0">
+    <div class="container-fluid p-0 m-0">
         <div v-if="gameInfo.length != 0" class="interesting-color">
-            <div id="bg">
+            <div id="bg1">
                 <!--navbar-->
                 <nav class="navbar fixed-top row justify-content-between">
                     <div class="d-flex col-3 text-warning h2 ml-4">
@@ -36,14 +36,15 @@
                         </form>
                     </div>
                 </nav>
-                <br><br><br>
+                <br><br><br><br>
                 <div class="d-flex row-12">
                     <div class="col-5" v-for="gamePlayer in this.gamePlayers">
                         <span class="d-flex h5">{{gamePlayer.player.email}}</span>
                     </div>
                 </div>
+                <br>
                 <div class="d-flex row-12">
-                    <div class="col-5 table-responsive">
+                    <div class="col-5 table-responsive p-1">
                         <table class="table table-bordered text-warning" id="firstTable">
                             <thead>
                             <tr>
@@ -63,8 +64,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div class="col-5 table-responsive">
+                    <div class="col-5 table-responsive p-1">
                         <table class="table table-bordered text-warning" id="secondTable">
                             <thead>
                             <tr>
@@ -85,56 +85,113 @@
                             </tbody>
                         </table>
                     </div>
-
-                    <div>
-                        <div class="table-responsive">
-                            <h5 scope="col"> Ships</h5>
+                     <div class="table-responsive mr-2">
+                         <div v-if="areAllShipsPlaced == false">
                             <div class="row justify-content-center mb-2">
                                 <input type="checkbox" name="position" value="vertical" @click="placeVerticalShip" class="mr-3">
                                 <i class="fas fa-sync-alt"></i>
                             </div>
-                            <table>
+                             <div class="table-responsive h6">
+                                <table>
+                                    <thead></thead>
+                                    <tbody>
+                                    <tr v-for="shipType in shipTypes">
+                                        <td v-if="shipType.name == 'Carrier'">
+                                            <img src="styles/img/carrear.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="shipType.name == 'Battleship'">
+                                            <img src="styles/img/battleship.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="shipType.name == 'Submarine'">
+                                            <img src="styles/img/submarine.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="shipType.name == 'Destroyer'">
+                                            <img src="styles/img/destroyer.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="shipType.name == 'Patrol Boat'">
+                                            <img src="styles/img/patrol-boat.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
+                                            @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
+                                            v-for="cell in shipType.length">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                             </div>
+                         </div>
+                         <div class="mb-5 mt-5" v-else>
+                             <button @click="addSalvo" class="btn btn-danger btn-lg">Fire ({{salvoCounter}})</button>
+                         </div>
+                         <br>
+                         <div class="text-warning h8">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
+                                        <th>Ships</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="shipType in shipTypes">
-                                    <td> {{shipType.name}}</td>
-                                    <td v-bind:class="{shipsToPlace: shipType.isPlaced == false, shipsPlaced: shipType.isPlaced == true}"
-                                        @click="setShipInProcess(shipType.name, shipType.length, shipType.isPlaced)"
-                                        v-for="cell in shipType.length">
-                                    </td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <hr/>
-                        </div>
-                        <div class="table-responsive text-warning">
-                            <table class="table table-bordered ">
-                                <thead>
-                                <tr>
-                                    <th>Ship</th>
-                                    <th>Left</th>
-                                    <th>Sunk</th>
-                                    <th>Turn</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr v-for="hitShip in hitShips">
-                                    <td>{{hitShip.ship}}</td>
-                                    <td>{{hitShip.left}}</td>
-                                    <td v-if="hitShip.sunk != 0">{{hitShip.sunk}}</td>
-                                    <td>{{hitShip.turn}}</td>
-                                </tr>
+                                    <tr v-for="hitShip in hitShips" v-bind:class="{sunkship_img_bg: hitShip.sunk == 'X'}">
+                                        <td v-if="hitShip.ship == 'Carrier'">
+                                            <img src="styles/img/carrear.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="hitShip.ship == 'Battleship'">
+                                            <img src="styles/img/battleship.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="hitShip.ship == 'Submarine'">
+                                            <img src="styles/img/submarine.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="hitShip.ship == 'Destroyer'">
+                                            <img src="styles/img/destroyer.png" width="40px" height="40px">
+                                        </td>
+                                        <td v-else-if="hitShip.ship == 'Patrol Boat'">
+                                            <img src="styles/img/patrol-boat.png" width="40px" height="40px">
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <button @click="addSalvo" class="btn btn-danger">Fire ({{salvoCounter}})</button>
+            </div>
+            <div id="bg2">
+                <div class="container text-warning h8">
+                    <h1 class="interesting-color">Ships</h1>
+                    <table class=" table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Ship</th>
+                            <th>Type</th>
+                            <th>Left</th>
+                            <th>Sunk</th>
+                            <th>Turn</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="hitShip in hitShips">
+                            <td v-if="hitShip.ship == 'Carrier'">
+                                <img src="styles/img/carrear.png" width="40px" height="40px">
+                            </td>
+                            <td v-else-if="hitShip.ship == 'Battleship'">
+                                <img src="styles/img/battleship.png" width="40px" height="40px">
+                            </td>
+                            <td v-else-if="hitShip.ship == 'Submarine'">
+                                <img src="styles/img/submarine.png" width="40px" height="40px">
+                            </td>
+                            <td v-else-if="hitShip.ship == 'Destroyer'">
+                                <img src="styles/img/destroyer.png" width="40px" height="40px">
+                            </td>
+                            <td v-else-if="hitShip.ship == 'Patrol Boat'">
+                                <img src="styles/img/patrol-boat.png" width="40px" height="40px">
+                            </td>
+                            <td>{{hitShip.ship}}</td>
+                            <td>{{hitShip.left}}</td>
+                            <td v-if="hitShip.sunk != 0">{{hitShip.sunk}}</td>
+                            <td>{{hitShip.turn}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
