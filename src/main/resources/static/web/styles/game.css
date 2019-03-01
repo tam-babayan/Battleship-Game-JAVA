@@ -35,30 +35,35 @@ nav {
     background-image: url("img/carrear.png");
     background-size: cover;
     background-position: center;
+    height: 80px;
 }
 
 .ship2 {
     background-image: url("img/battleship.png");
     background-size: cover;
     background-position: center;
+    height: 80px;
 }
 
 .ship3 {
     background-image: url("img/submarine.png");
     background-size: cover;
     background-position: center;
+    height: 80px;
 }
 
 .ship4 {
     background-image: url("img/destroyer.png");
     background-size: cover;
     background-position: center;
+    height: 80px;
 }
 
 .ship5 {
     background-image: url("img/patrol-boat.png");
     background-size: cover;
     background-position: center;
+    height: 80px;
 }
 
 .table {
@@ -138,8 +143,4 @@ nav {
 
 .sunkship_img_bg {
     background-color: rgba(236, 8, 2, 0.4);
-}
-
-.btn-lg {
-    border-radius: 80px;
 }

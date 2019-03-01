@@ -56,6 +56,7 @@ new Vue({
             opponentSalvos: this.isOpponentSalvos(this.rows[i] + this.columns[j]),
             opponentShip: this.isOpponentShips(this.rows[i] + this.columns[j]),
             opponentSunkShips: this.getOpponentSunkShips(this.rows[i] + this.columns[j]),
+            mySunkShips: this.isMySunkShip(this.rows[i] + this.columns[j]),
             mySalvoTurn: this.getMySalvoTurn(this.rows[i] + this.columns[j]),
             opponentSalvoTurn: this.getOpponentSalvoTurn(this.rows[i] + this.columns[j])
           };
@@ -76,13 +77,14 @@ new Vue({
           left = left - this.hits[ship.type].locations.length
         }
         if (left === 0) {
-          hitShips.push({ship: ship.type, left: left, sunk: "X", turn: this.hits[ship.type].turn});
+          hitShips.push({ship: ship.type, left: left, sunk: "X", turn: this.hits[ship.type].turn, locations: ship.locations});
         } else {
           hitShips.push({ship: ship.type, left: left});
         }
       }
       hitShips.sort((a, b) => (a.ship > b.ship) ? 1 : ((b.ship > a.ship) ? -1 : 0));
 
+      console.log(hitShips)
       return hitShips
     },
 
@@ -219,6 +221,15 @@ new Vue({
     getOpponentSunkShips(coordinate) {
       for (let i = 0; i < this.opponentShips.length; i++) {
         if (this.opponentShips[i].type != null && this.opponentShips[i].locations.includes(coordinate)) {
+          return true;
+        }
+      }
+      return false;
+    },
+
+    isMySunkShip(coordinate) {
+      for(let i = 0; i< this.hitShips.length; i++) {
+        if (this.hitShips[i].locations != null && this.hitShips[i].locations.includes(coordinate)) {
           return true;
         }
       }
