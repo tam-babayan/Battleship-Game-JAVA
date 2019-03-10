@@ -6,17 +6,23 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+
+// tells Spring to create a Player table for this class
 @Entity
 public class Player {
 
+    // says that the id instance variable holds the database key for this class and generates
+    // GeneratedValue and GenericGenerator tell JPA to use whatever ID generator is provided by the database system
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
 
+    // one Player may have many gamePlayers
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     private Set<GamePlayer> gamePlayers;
 
+    // one player may have many scores
     @OneToMany(mappedBy="player", fetch=FetchType.EAGER)
     private Set<Score> scores = new HashSet<>();
 
