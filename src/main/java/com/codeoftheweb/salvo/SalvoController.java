@@ -26,26 +26,31 @@ public class SalvoController {
     @Autowired
     private ScoreRepository scoreRepository;
 
-
-    @RequestMapping(path = "api/players", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, String password) {
-        if (userName.isEmpty()) {
-            return new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
-        }
-        Player player = playerRepository.findByUserName(userName);
-        if (player != null) {
-            return new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.CONFLICT);
-        }
-        Player newPlayer = playerRepository.save(new Player(userName, password));
-        return new ResponseEntity<>(makeMap("Player", newPlayer.getUserName()), HttpStatus.CREATED);
-    }
-
+    // creates map with given key and value
     private Map<String, Object> makeMap(String key, Object value) {
         Map<String, Object> map = new HashMap<>();
         map.put(key, value);
         return map;
     }
 
+    // adds new player with userName and password when gets a POST request to api/players
+    @RequestMapping(path = "api/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, String password) {
+
+        if (userName.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
+        }
+        Player player = playerRepository.findByUserName(userName);
+
+        if (player != null) {
+            return new ResponseEntity<>(makeMap("error", "Username already exists"), HttpStatus.CONFLICT);
+        }
+        Player newPlayer = playerRepository.save(new Player(userName, password));
+
+        return new ResponseEntity<>(makeMap("Player", newPlayer.getUserName()), HttpStatus.CREATED);
+    }
+
+    // creates new game when gets a POST request to api/games
     @RequestMapping(path = "/api/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
         if (isGuest(authentication)) {
@@ -60,6 +65,7 @@ public class SalvoController {
 
     }
 
+    // creates a new gamePlayer when gets POST request to /api/game/{gameId}/players
     @RequestMapping(path = "/api/game/{gameId}/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(Authentication authentication, @PathVariable long gameId) {
         if (isGuest(authentication)) {
@@ -86,6 +92,7 @@ public class SalvoController {
     }
 
 
+    // validating and adds ships when gets POST request to /games/players/{gamePlayerId}/ships
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<Void> addShip(Authentication authentication, @PathVariable long gamePlayerId,
                                         @RequestBody Ship ship) {
@@ -101,6 +108,7 @@ public class SalvoController {
 
         ShipType type = ShipType.value(ship.getShipType());
 
+        // ship validation
         if (gamePlayer.getShips()
                 .stream()
                 .anyMatch(existingShip -> type == ShipType.value(existingShip.getShipType()))
@@ -127,7 +135,7 @@ public class SalvoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    // checks the turns and adds salvo when gets POST request to games/players/{gamePlayerId}/salvos
     @RequestMapping(value = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
     public ResponseEntity<Void> fireSalvo(Authentication authentication, @PathVariable long gamePlayerId,
                                           @RequestBody Salvo salvo) {
@@ -170,7 +178,7 @@ public class SalvoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    // gives scores to the players based on sunk ships and changes the sate of the game
     private void changeStateToGameOver(Game game) {
         List<GamePlayer> winners = new ArrayList<>();
         game.getGamePlayers().forEach(gamePlayer -> {
