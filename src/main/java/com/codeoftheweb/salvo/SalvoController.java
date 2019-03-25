@@ -92,7 +92,7 @@ public class SalvoController {
     }
 
 
-    // validating and adds ships when gets POST request to /games/players/{gamePlayerId}/ships
+    // validates and adds ships when gets POST request to /games/players/{gamePlayerId}/ships
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
     public ResponseEntity<Void> addShip(Authentication authentication, @PathVariable long gamePlayerId,
                                         @RequestBody Ship ship) {
@@ -113,7 +113,7 @@ public class SalvoController {
                 .stream()
                 .anyMatch(existingShip -> type == ShipType.value(existingShip.getShipType()))
                 || ShipType.value(ship.getShipType()) == ShipType.UNKNOWN
-                || ShipType.getLegth(type) != ship.getShipLocations().size()
+                || ShipType.getLength(type) != ship.getShipLocations().size()
                 || gamePlayer.getShips().size() >= 5
         ) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -170,7 +170,7 @@ public class SalvoController {
         Optional<Salvo> opponentLatestSalvo = opponentSalvos.stream().max(Comparator.comparingInt(Salvo::getTurn));
 
         if (opponentLatestSalvo.isPresent() && opponentLatestSalvo.get().getTurn() == salvo.getTurn()) {
-            changeStateToGameOver(gamePlayer.getGame());
+            giveScoresAndChangeStateToGameOver(gamePlayer.getGame());
 
             gameRepository.save(gamePlayer.getGame());
         }
@@ -179,7 +179,7 @@ public class SalvoController {
     }
 
     // gives scores to the players based on sunk ships and changes the sate of the game
-    private void changeStateToGameOver(Game game) {
+    private void giveScoresAndChangeStateToGameOver(Game game) {
         List<GamePlayer> winners = new ArrayList<>();
         game.getGamePlayers().forEach(gamePlayer -> {
             List<Map<String, Object>> ships = getOpponentSunkShips(game.getGamePlayers(), gamePlayer.getId());
@@ -248,7 +248,7 @@ public class SalvoController {
 
         opponent.ifPresent(gamePlayer -> gamePlayer.getShips().forEach(ship -> {
             Map<String, Object> tempShip = new HashMap<>();
-            List<String> hitLocations = getHitedLocations(ship, currentPlayer.getsalvos());
+            List<String> hitLocations = getHitLocations(ship, currentPlayer.getsalvos());
 
             if (hitLocations.size() > 0) {
                 tempShip.put("locations", hitLocations);
@@ -261,7 +261,7 @@ public class SalvoController {
         return ships;
     }
 
-    private List<String> getHitedLocations(Ship ship, Set<Salvo> salvos) {
+    private List<String> getHitLocations(Ship ship, Set<Salvo> salvos) {
         List<String> locations = new ArrayList<>();
 
         ship.getShipLocations().forEach(location -> {

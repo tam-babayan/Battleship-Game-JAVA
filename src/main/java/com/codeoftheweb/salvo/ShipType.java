@@ -25,7 +25,7 @@ public enum ShipType {
         return ShipType.UNKNOWN;
     }
 
-    public static int getLegth(ShipType shipType) {
+    public static int getLength(ShipType shipType) {
         switch (shipType) {
             case CARRIER:
                 return 5;
