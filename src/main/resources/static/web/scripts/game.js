@@ -273,7 +273,7 @@ new Vue({
       this.shipInProcess.name = null;
       this.shipInProcess.length = 0;
       this.shipTypes.map(ship => {
-            if (type == ship.name) {
+            if (type === ship.name) {
               ship.isPlaced = true
             }
           }

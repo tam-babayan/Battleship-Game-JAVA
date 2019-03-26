@@ -35,7 +35,7 @@ public class SalvoController {
 
     // adds new player with userName and password when gets a POST request to api/players
     @RequestMapping(path = "api/players", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, String password) {
+    public ResponseEntity<Map<String, Object>> createPlayer(@RequestParam String userName, String password) {
 
         if (userName.isEmpty()) {
             return new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
@@ -54,7 +54,7 @@ public class SalvoController {
     @RequestMapping(path = "/api/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
         if (isGuest(authentication)) {
-            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Please log-in first"), HttpStatus.UNAUTHORIZED);
         }
 
         Game newGame = new Game(new Date());
@@ -69,7 +69,7 @@ public class SalvoController {
     @RequestMapping(path = "/api/game/{gameId}/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(Authentication authentication, @PathVariable long gameId) {
         if (isGuest(authentication)) {
-            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Please log-in first"), HttpStatus.UNAUTHORIZED);
         }
         Game currentGame = gameRepository.findOne(gameId);
 
