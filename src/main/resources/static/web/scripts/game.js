@@ -41,37 +41,38 @@ new Vue({
   },
 
   computed: {
+
     board() {
       let array = [];
-      for (let i = 0; i < this.rows.length; i++) {
-        let rowObject = {rowId: this.rows[i], column: []};
-        for (let j = 1; j < this.columns.length; j++) {
+      this.rows.forEach(row => {
+        let rowObject = {rowId: row, column: []};
+        this.columns.forEach(column => {
+          let coordinate = row + column;
           let columnObject = {
-            columnId: this.columns[j],
-            ship: this.isShipCells(this.rows[i] + this.columns[j]),
-            hoveredCell: this.currentShipPositions.includes(this.rows[i] + this.columns[j]),
-            overlapCell: this.overlapShipPositions.includes(this.rows[i] + this.columns[j]),
-            salvoInProcessCell: this.salvoInProcess.includes(this.rows[i] + this.columns[j]),
-            mySalvos: this.isMySalvoCell(this.rows[i] + this.columns[j]),
-            opponentSalvos: this.isOpponentSalvos(this.rows[i] + this.columns[j]),
-            opponentShip: this.isOpponentShips(this.rows[i] + this.columns[j]),
-            opponentSunkShips: this.getOpponentSunkShips(this.rows[i] + this.columns[j]),
-            mySunkShips: this.isMySunkShip(this.rows[i] + this.columns[j]),
-            mySalvoTurn: this.getMySalvoTurn(this.rows[i] + this.columns[j]),
-            opponentSalvoTurn: this.getOpponentSalvoTurn(this.rows[i] + this.columns[j])
+            columnId: column,
+            ship: this.isShipCells(coordinate),
+            hoveredCell: this.currentShipPositions.includes(coordinate),
+            overlapCell: this.overlapShipPositions.includes(coordinate),
+            salvoInProcessCell: this.salvoInProcess.includes(coordinate),
+            mySalvos: this.isMySalvoCell(coordinate),
+            opponentSalvos: this.isOpponentSalvos(coordinate),
+            opponentShip: this.isOpponentShips(coordinate),
+            opponentSunkShips: this.getOpponentSunkShips(coordinate),
+            mySunkShips: this.isMySunkShip(coordinate),
+            mySalvoTurn: this.getMySalvoTurn(coordinate),
+            opponentSalvoTurn: this.getOpponentSalvoTurn(coordinate)
           };
           rowObject.column.push(columnObject);
-        }
+        });
         array.push(rowObject);
-      }
+      });
 
       return array;
     },
 
     hitShips() {
       let hitShips = [];
-      for (let i = 0; i < this.ships.length; i++) {
-        let ship = this.ships[i];
+      this.ships.forEach(ship => {
         let left = ship.locations.length;
         if (this.hits[ship.type]) {
           left = left - this.hits[ship.type].locations.length
@@ -81,10 +82,9 @@ new Vue({
         } else {
           hitShips.push({ship: ship.type, left: left});
         }
-      }
+      });
       hitShips.sort((a, b) => (a.ship > b.ship) ? 1 : ((b.ship > a.ship) ? -1 : 0));
-
-      console.log(hitShips)
+      console.log(hitShips);
       return hitShips
     },
 
@@ -97,6 +97,7 @@ new Vue({
       return areAllShipsPlaced
     }
   },
+
   methods: {
 
     // get the gamePlayerId from url
@@ -131,7 +132,6 @@ new Vue({
             this.updateShipsToPlace();
             this.updateSalvoTurn();
             this.getHitInfo();
-            // console.log(this.opponentShips);
           })
           .catch(error => {
             this.errorMessage = error.response.data.error;

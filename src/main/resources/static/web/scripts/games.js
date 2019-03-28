@@ -173,7 +173,6 @@ new Vue({
             }
           })
           .then(data => {
-//        console.log(data)
             window.location.replace("http://localhost:8080/web/game.html?gp=" + data.gpid)
           })
           .catch(error => console.log(error))
