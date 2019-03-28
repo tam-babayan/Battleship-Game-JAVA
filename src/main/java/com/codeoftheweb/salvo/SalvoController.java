@@ -35,7 +35,7 @@ public class SalvoController {
 
     // adds new player with userName and password when gets a POST request to api/players
     @RequestMapping(path = "api/players", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createPlayer(@RequestParam String userName, String password) {
+    public ResponseEntity<Map<String, Object>> createUser(@RequestParam String userName, String password) {
 
         if (userName.isEmpty()) {
             return new ResponseEntity<>(makeMap("error", "No name"), HttpStatus.FORBIDDEN);
@@ -54,7 +54,7 @@ public class SalvoController {
     @RequestMapping(path = "/api/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createGame(Authentication authentication) {
         if (isGuest(authentication)) {
-            return new ResponseEntity<>(makeMap("error", "Please log-in first"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
         }
 
         Game newGame = new Game(new Date());
@@ -69,7 +69,7 @@ public class SalvoController {
     @RequestMapping(path = "/api/game/{gameId}/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(Authentication authentication, @PathVariable long gameId) {
         if (isGuest(authentication)) {
-            return new ResponseEntity<>(makeMap("error", "Please log-in first"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
         }
         Game currentGame = gameRepository.findOne(gameId);
 
@@ -94,16 +94,16 @@ public class SalvoController {
 
     // validates and adds ships when gets POST request to /games/players/{gamePlayerId}/ships
     @RequestMapping(value = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
-    public ResponseEntity<Void> addShip(Authentication authentication, @PathVariable long gamePlayerId,
+    public ResponseEntity<Map<String, Object>> addShip(Authentication authentication, @PathVariable long gamePlayerId,
                                         @RequestBody Ship ship) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
 
         if (isGuest(authentication) || !this.getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
         }
 
         if (gamePlayer.getGame().getState() != GameState.PLACE_SHIPS) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "Not allowed toplace ships"), HttpStatus.FORBIDDEN);
         }
 
         ShipType type = ShipType.value(ship.getShipType());
@@ -116,7 +116,7 @@ public class SalvoController {
                 || ShipType.getLength(type) != ship.getShipLocations().size()
                 || gamePlayer.getShips().size() >= 5
         ) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "Ship is not valid"), HttpStatus.FORBIDDEN);
         }
 
         gamePlayer.addShip(ship);
@@ -137,15 +137,15 @@ public class SalvoController {
 
     // checks the turns and adds salvo when gets POST request to games/players/{gamePlayerId}/salvos
     @RequestMapping(value = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
-    public ResponseEntity<Void> fireSalvo(Authentication authentication, @PathVariable long gamePlayerId,
+    public ResponseEntity<Map<String, Object>> fireSalvo(Authentication authentication, @PathVariable long gamePlayerId,
                                           @RequestBody Salvo salvo) {
         GamePlayer gamePlayer = gamePlayerRepo.findOne(gamePlayerId);
         if (isGuest(authentication) || !getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Username is not registered"), HttpStatus.UNAUTHORIZED);
         }
 
         if (gamePlayer.getGame().getState() != GameState.WAIT_FOR_SALVOS) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "Not allowed to fire salvo"), HttpStatus.FORBIDDEN);
         }
 
         Set<Salvo> opponentSalvos = gamePlayer.getGame().getGamePlayers().stream()
@@ -160,7 +160,7 @@ public class SalvoController {
                 .anyMatch(salvo1 -> salvo1.getTurn() == salvo.getTurn() || Math.abs(salvo1.getTurn() - salvo.getTurn()) == 1);
 
         if (!canFire || salvo.getSalvoLocations().size() > 5) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "Not allowed to fire salvo"), HttpStatus.FORBIDDEN);
         }
 
         gamePlayer.addSalvo(salvo);
@@ -218,9 +218,7 @@ public class SalvoController {
 
         Map<String, Object> result = new HashMap<>();
         if (isGuest(authentication) || !getCurrentPlayer(authentication).getGamePlayers().contains(gamePlayer)) {
-            result.put("error", "You have no permission");
-
-            return new ResponseEntity<>(result, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(makeMap("error", "You have no permission"), HttpStatus.FORBIDDEN);
         }
 
         result.put("id", gamePlayer.getGame().getId());
