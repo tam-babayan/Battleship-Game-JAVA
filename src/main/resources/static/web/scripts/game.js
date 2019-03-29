@@ -229,7 +229,9 @@ new Vue({
           Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded"
         }
-      }).then(window.location.replace("/web/games.html"));
+      })
+          .then(window.location.replace("/web/games.html"))
+          .catch(error => console.log(error));
     },
 
     // posts ship data on click
