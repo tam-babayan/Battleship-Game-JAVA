@@ -132,6 +132,7 @@ new Vue({
             this.updateShipsToPlace();
             this.updateSalvoTurn();
             this.getHitInfo();
+            console.log(this.salvos);
           })
           .catch(error => {
             this.errorMessage = error.response.data.error;
@@ -152,88 +153,88 @@ new Vue({
     },
 
     isShipCells(coordinate) {
-      for (let i = 0; i < this.ships.length; i++) {
-        if (this.ships[i].locations.includes(coordinate)) {
-          return true;
+      let isShip = false;
+      this.ships.forEach(ship => {
+        if (ship.locations.includes(coordinate)) {
+          isShip = true;
         }
-      }
-      return false;
+      });
+      return isShip;
     },
 
     isMySalvoCell(coordinate) {
-      for (let i = 0; i < this.salvos.length; i++) {
-        if (
-            this.salvos[i].player == this.gamePlayerId &&
-            this.salvos[i].locations.includes(coordinate)
-        ) {
-          return true;
+      let isMySalvo = false;
+      this.salvos.forEach(salvo => {
+        if (salvo.player == this.gamePlayerId && salvo.locations.includes(coordinate)) {
+          isMySalvo = true;
         }
-      }
-      return false;
+      });
+      return isMySalvo;
     },
 
     isOpponentSalvos(coordinate) {
-      for (let i = 0; i < this.salvos.length; i++) {
-        if (
-            this.salvos[i].player != this.gamePlayerId &&
-            this.salvos[i].locations.includes(coordinate) && this.isShipCells(coordinate)
-        ) {
-          return true;
+      let isOpponentSalvo = false;
+      this.salvos.forEach(salvo => {
+        if (salvo.player != this.gamePlayerId &&
+            salvo.locations.includes(coordinate) &&
+            this.isShipCells(coordinate)) {
+          isOpponentSalvo = true;
         }
-      }
-      return false;
+      })
+      return isOpponentSalvo;
     },
 
     getMySalvoTurn(coordinate) {
-      for (let i = 0; i < this.salvos.length; i++) {
-        if (
-            this.salvos[i].player == this.gamePlayerId &&
-            this.salvos[i].locations.includes(coordinate)
-        ) {
-          return this.salvos[i].turn;
+      let muSalvoTurn = null;
+      this.salvos.forEach(salvo => {
+        if (salvo.player == this.gamePlayerId &&
+            salvo.locations.includes(coordinate)) {
+          muSalvoTurn = salvo.turn;
         }
-      }
-      return null;
+      });
+      return muSalvoTurn;
     },
 
     getOpponentSalvoTurn(coordinate) {
-      for (let i = 0; i < this.salvos.length; i++) {
-        if (
-            this.salvos[i].player != this.gamePlayerId &&
-            this.salvos[i].locations.includes(coordinate) &&
-            this.isShipCells(coordinate)
-        ) {
-          return this.salvos[i].turn;
+      let opponentSalvoTurn = null;
+      this.salvos.forEach(salvo => {
+        if (salvo.player != this.gamePlayerId &&
+            salvo.locations.includes(coordinate) &&
+            this.isShipCells(coordinate)) {
+          opponentSalvoTurn = salvo.turn;
         }
-      }
-      return null;
+      });
+      return opponentSalvoTurn;
     },
 
     isOpponentShips(coordinate) {
-      for (let i = 0; i < this.opponentShips.length; i++) {
-        if (this.opponentShips[i].locations.includes(coordinate)) {
-          return true;
+      let isOpponentShip = false;
+      this.opponentShips.forEach(opponentShip => {
+        if (opponentShip.locations.includes(coordinate)) {
+          isOpponentShip = true;
         }
-      }
-      return false;
+      });
+      return isOpponentShip;
     },
 
     getOpponentSunkShips(coordinate) {
-      for (let i = 0; i < this.opponentShips.length; i++) {
-        if (this.opponentShips[i].type != null && this.opponentShips[i].locations.includes(coordinate)) {
-          return true;
+      let isOpponentSunkShip = false;
+      this.opponentShips.forEach(opponentShip => {
+        if (opponentShip.type != null && opponentShip.locations.includes(coordinate)) {
+          isOpponentSunkShip = true;
         }
-      }
-      return false;
+      });
+      return isOpponentSunkShip;
     },
 
     isMySunkShip(coordinate) {
-      for(let i = 0; i< this.hitShips.length; i++) {
-        if (this.hitShips[i].locations != null && this.hitShips[i].locations.includes(coordinate)) {
-          return true;
+      let isMySunkShip = false;
+      this.hitShips.forEach(hitShip => {
+        if (hitShip.locations != null && hitShip.locations.includes(coordinate)) {
+          isMySunkShip = true;
         }
-      }
-      return false;
+      });
+      return isMySunkShip;
     },
 
     logOut() {
@@ -318,16 +319,17 @@ new Vue({
 
     isBorderedShipPlaced(letter, number) {
       let arr = [];
+      let isBorderedCell = false;
       arr.push(this.rows[this.rows.indexOf(letter) - 1] + parseInt(number));
       arr.push(this.rows[this.rows.indexOf(letter) + 1] + parseInt(number));
       arr.push(letter + parseInt(number + 1));
       arr.push(letter + parseInt(number - 1));
-      for (let i = 0; i < arr.length; i++) {
-        if (this.isShipCells(arr[i])) {
-          return true
+      arr.forEach(element => {
+        if (this.isShipCells(element)) {
+          isBorderedCell = true;
         }
-      }
-      return false
+      });
+      return isBorderedCell;
     },
 
     // gets the ship info on clicking on the ships
@@ -361,14 +363,14 @@ new Vue({
       }
     },
 
-
     isSalvoPlaced(coordinate) {
-      for (let i = 0; i < this.salvos.length; i++) {
-        if (this.salvos[i].player == this.gamePlayerId && this.salvos[i].locations.includes(coordinate)) {
-          return true
+      let isPlaced = false;
+      this.salvos.forEach(salvo => {
+        if (salvo.player == this.gamePlayerId && salvo.locations.includes(coordinate)) {
+          isPlaced = true;
         }
-      }
-      return false
+      });
+      return isPlaced;
     },
 
     updateSalvoTurn() {
@@ -378,7 +380,6 @@ new Vue({
             return salvo.turn
           })) + 1)
     },
-
 
     // posts salvo data on command Fire
     addSalvo() {
@@ -401,7 +402,6 @@ new Vue({
           })
           .catch(error => console.log(error))
     },
-
 
     getHitInfo() {
       this.hits = []
