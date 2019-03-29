@@ -33,8 +33,6 @@ new Vue({
 
   mounted() {
     this.initParams();
-    this.getCurrentPlayerId();
-
     setInterval(() => {
       this.getGameInfo()
     }, 3000);
@@ -84,7 +82,6 @@ new Vue({
         }
       });
       hitShips.sort((a, b) => (a.ship > b.ship) ? 1 : ((b.ship > a.ship) ? -1 : 0));
-      console.log(hitShips);
       return hitShips
     },
 
@@ -104,19 +101,7 @@ new Vue({
     initParams() {
       let url = new URL(window.location.href);
       this.gamePlayerId = url.searchParams.get("gp");
-    },
-
-    // get the logged in user id and calls a function to get game info
-    getCurrentPlayerId() {
-      axios
-          .get("/api/games")
-          .then(response => {
-            if (response.data.player.id != null) {
-              this.playerId = response.data.player.id;
-              this.getGameInfo()
-            }
-          })
-          .catch(error => console.log(error));
+      this.getGameInfo()
     },
 
     // requests ship and salvo info
@@ -132,7 +117,6 @@ new Vue({
             this.updateShipsToPlace();
             this.updateSalvoTurn();
             this.getHitInfo();
-            console.log(this.salvos);
           })
           .catch(error => {
             this.errorMessage = error.response.data.error;
@@ -397,14 +381,14 @@ new Vue({
               this.salvoTurn = this.salvoTurn + 1;
               this.getGameInfo()
             }
-            this.salvoInProcess = []
+            this.salvoInProcess = [];
             this.salvoCounter = 5
           })
           .catch(error => console.log(error))
     },
 
     getHitInfo() {
-      this.hits = []
+      this.hits = [];
       this.ships.forEach(ship => {
         ship.locations.forEach(shipLocation => {
           this.salvos
