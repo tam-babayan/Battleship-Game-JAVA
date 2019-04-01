@@ -142,35 +142,29 @@
                             <th scope="row">{{game.gameId}}</th>
                             <td>{{game.date}}</td>
                             <td>
-                                        <span v-if="game.gamePlayers[0]">
-                                            {{game.gamePlayers[0].player.email}}
-                                        </span>
+                                <span v-if="game.gamePlayers[0]">
+                                    {{game.gamePlayers[0].player.email}}
+                                </span>
                             </td>
                             <td>
-                                        <span v-if="game.gamePlayers[1]">
-                                            {{game.gamePlayers[1].player.email}}
-                                        </span>
+                                <span v-if="game.gamePlayers[1]">
+                                    {{game.gamePlayers[1].player.email}}
+                                </span>
                                 <span v-if="isLoggedIn && !game.gamePlayers[1] && gamePlayer.player.id != currentPlayer.id"
-                                      v-for="gamePlayer in game.gamePlayers">
-                                            <a class="text-warning" @click="joinGame(game.gameId)">Join Game</a>
-                                        </span>
+                                  v-for="gamePlayer in game.gamePlayers">
+                                    <a class="text-warning" @click="joinGame(game.gameId)">Join Game</a>
+                                </span>
                             </td>
                             <td>
-                                        <span v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id"
-                                              v-for="gamePlayer in game.gamePlayers">
-                                            <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id"
-                                               class="text-warning">Resume</a>
-                                        </span>
+                                <span v-if="isLoggedIn && gamePlayer.player.id === currentPlayer.id"
+                                      v-for="gamePlayer in game.gamePlayers">
+                                    <a :href="'http://localhost:8080/web/game.html?gp=' + gamePlayer.id"
+                                       class="text-warning">Resume</a>
+                                </span>
                             </td>
                         </tr>
                         </tbody>
                     </table>
-                    <!--<div class="image-button hovereffect mb-3" v-if="isLoggedIn">-->
-                        <!--<a @click="createNewGame">-->
-                            <!--<img class="img-fluid p-3" src="styles/img/start-icon.png" width="110px" height="110px" alt="">-->
-                            <!--<span class="text-content text-warning h5 ml-1">Start New Game</span>-->
-                        <!--</a>-->
-                    <!--</div>-->
                 </div>
             </div>
         </div>

@@ -80,7 +80,7 @@ new Vue({
           this.username = "";
           this.password = "";
         }
-      });
+      }).catch(error => console.log(error));
     },
 
     validEmail(email) {
@@ -99,7 +99,7 @@ new Vue({
         }
       }).then(response => {
         this.isLoggedIn = false;
-      });
+      }).catch(error => console.log(error));
     },
 
     signUp() {
@@ -135,7 +135,7 @@ new Vue({
             this.password = "";
             break;
         }
-      });
+      }).catch(error => console.log(error));
     },
 
     createNewGame() {
