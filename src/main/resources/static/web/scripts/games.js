@@ -76,7 +76,7 @@ new Vue({
           this.password = "";
         }
         if (response.status == 401) {
-          alert("Password is not correct");
+          alert("Wrong Username or Password");
           this.username = "";
           this.password = "";
         }

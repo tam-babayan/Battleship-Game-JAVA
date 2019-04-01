@@ -44,10 +44,10 @@ new Vue({
       let array = [];
       this.rows.forEach(row => {
         let rowObject = {rowId: row, column: []};
-        this.columns.forEach(column => {
-          let coordinate = row + column;
+        for (let i = 1; i < this.columns.length; i++) {
+          let coordinate = row + this.columns[i];
           let columnObject = {
-            columnId: column,
+            columnId: this.columns[i],
             ship: this.isShipCells(coordinate),
             hoveredCell: this.currentShipPositions.includes(coordinate),
             overlapCell: this.overlapShipPositions.includes(coordinate),
@@ -61,7 +61,7 @@ new Vue({
             opponentSalvoTurn: this.getOpponentSalvoTurn(coordinate)
           };
           rowObject.column.push(columnObject);
-        });
+        };
         array.push(rowObject);
       });
 
